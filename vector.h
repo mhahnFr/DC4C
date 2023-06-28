@@ -80,7 +80,7 @@ static inline void vector_##name##_reserve(struct vector_##name * v, size_t newS
                                                                                                     \
 static inline void vector_##name##_create(struct vector_##name * v) {                               \
     v->count     = 0;                                                                               \
-    v->capacity  = 0;                                                                               \
+    v->cap       = 0;                                                                               \
     v->content   = NULL;                                                                            \
                                                                                                     \
     v->push_back = &vector_##name##_push_back;                                                      \
