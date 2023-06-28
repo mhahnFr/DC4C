@@ -74,18 +74,18 @@ static inline void vector_##name##_reserve(struct vector_##name * v, size_t newS
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_create(struct vector_##name * v) {                               \
-    v->count     = 0;                           \
-    v->capacity  = 0;                           \
-    v->content   = NULL;                        \
-                                                \
-    v->push_back = &vector_##name##_push_back;  \
-    v->pop_back  = &vector_##name##_pop_back;   \
-    v->insert    = &vector_##name##_insert;     \
-    v->remove    = &vector_##name##_remove;     \
-    v->size      = &vector_##name##_size;       \
-    v->capacity  = &vector_##name##_capacity;   \
-    v->data      = &vector_##name##_data;       \
-    v->reserve   = &vector_##name##_reserve;    \
+    v->count     = 0;                                                                               \
+    v->capacity  = 0;                                                                               \
+    v->content   = NULL;                                                                            \
+                                                                                                    \
+    v->push_back = &vector_##name##_push_back;                                                      \
+    v->pop_back  = &vector_##name##_pop_back;                                                       \
+    v->insert    = &vector_##name##_insert;                                                         \
+    v->remove    = &vector_##name##_remove;                                                         \
+    v->size      = &vector_##name##_size;                                                           \
+    v->capacity  = &vector_##name##_capacity;                                                       \
+    v->data      = &vector_##name##_data;                                                           \
+    v->reserve   = &vector_##name##_reserve;                                                        \
 }
 
 
