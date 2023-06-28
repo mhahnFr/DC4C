@@ -20,7 +20,7 @@
         void   (*push_back)(struct vector_##name *, type);         \
         type   (*pop_back) (struct vector_##name *);               \
         void   (*insert)   (struct vector_##name *, type, size_t); \
-        void   (*remove)   (struct vector_##name *, size_t);       \
+        type   (*remove)   (struct vector_##name *, size_t);       \
         size_t (*size)     (struct vector_##name *);               \
         size_t (*capacity) (struct vector_##name *);               \
         type * (*data)     (struct vector_##name *);               \
@@ -51,7 +51,7 @@ static inline type vector_##name##_remove(struct vector_##name * v, size_t posit
 }                                                                                                   \
                                                                                                     \
 static inline size_t vector_##name##_size(struct vector_##name * v) {                               \
-    return v->size;                                                                                 \
+    return v->count;                                                                                \
 }                                                                                                   \
                                                                                                     \
 static inline size_t vector_##name##_capacity(struct vector_##name * v) {                           \
