@@ -9,8 +9,9 @@
 #define vector_h
 
 #include <stdlib.h>
+#include <string.h>
 
-#define vector_named(type, name)                                   \
+#define vector_named(name, type)                                   \
     struct vector_##name {                                         \
         size_t count;                                              \
         size_t cap;                                                \
@@ -23,7 +24,7 @@
         size_t (*size)     (struct vector_##name *);               \
         size_t (*capacity) (struct vector_##name *);               \
         type * (*data)     (struct vector_##name *);               \
-        void   (*reserve)  (struct vector_##name *);               \
+        void   (*reserve)  (struct vector_##name *, size_t);       \
     }
 
 #define vector(type) vector_named(type, type)
@@ -46,19 +47,30 @@ static inline type vector_##name##_remove(struct vector_##name * v, size_t posit
 }                                                                                                   \
                                                                                                     \
 static inline size_t vector_##name##_size(struct vector_##name * v) {                               \
-    return 0;                                                                                       \
+    return v->size;                                                                                 \
 }                                                                                                   \
                                                                                                     \
 static inline size_t vector_##name##_capacity(struct vector_##name * v) {                           \
-    return 0;                                                                                       \
+    return v->cap;                                                                                  \
 }                                                                                                   \
                                                                                                     \
 static inline type * vector_##name##_data(struct vector_##name * v) {                               \
-    return NULL;                                                                                    \
+    return v->content;                                                                              \
 }                                                                                                   \
                                                                                                     \
-static inline void vector_##name##_reserve(struct vector_##name * v) {                              \
+static inline void vector_##name##_reserve(struct vector_##name * v, size_t newSize) {              \
+    if (cap >= newSize) {                                                                           \
+        return;                                                                                     \
+    }                                                                                               \
                                                                                                     \
+    type * tmp = malloc(sizeof(type) * newSize);                                                    \
+    if (tmp == NULL) {                                                                              \
+        return;                                                                                     \
+    }                                                                                               \
+                                                                                                    \
+    memcpy(tmp, v->content, v->count);                                                              \
+    v->content = tmp;                                                                               \
+    free(tmp);                                                                                      \
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_create(struct vector_##name * v) {                               \
@@ -77,8 +89,8 @@ static inline void vector_##name##_create(struct vector_##name * v) {           
 }
 
 
-#define typedef_vector_named(type, name)        \
-vector_named(type, name);                       \
+#define typedef_vector_named(name, type)        \
+vector_named(name, type);                       \
 vector_methods(type, name)                      \
 typedef struct vector_##name vector_##name##_t
 
