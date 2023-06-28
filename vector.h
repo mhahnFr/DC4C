@@ -31,7 +31,11 @@
 
 #define vector_methods(type, name)                                                                  \
 static inline void vector_##name##_push_back(struct vector_##name * v, type value) {                \
+    if (v->cap < v->count + 1) {                                                                    \
+        v->reserve(v, v->cap == 0 ? 1 : v->cap * 2);                                                \
+    }                                                                                               \
                                                                                                     \
+    v->content[v->count++] = value;                                                                 \
 }                                                                                                   \
                                                                                                     \
 static inline type vector_##name##_pop_back(struct vector_##name * v) {                             \
@@ -59,7 +63,7 @@ static inline type * vector_##name##_data(struct vector_##name * v) {           
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_reserve(struct vector_##name * v, size_t newSize) {              \
-    if (cap >= newSize) {                                                                           \
+    if (v->cap >= newSize) {                                                                        \
         return;                                                                                     \
     }                                                                                               \
                                                                                                     \
@@ -68,9 +72,10 @@ static inline void vector_##name##_reserve(struct vector_##name * v, size_t newS
         return;                                                                                     \
     }                                                                                               \
                                                                                                     \
-    memcpy(tmp, v->content, v->count);                                                              \
+    memcpy(tmp, v->content, v->count * sizeof(type));                                               \
+    free(v->content);                                                                               \
     v->content = tmp;                                                                               \
-    free(tmp);                                                                                      \
+    v->cap = newSize;                                                                               \
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_create(struct vector_##name * v) {                               \
