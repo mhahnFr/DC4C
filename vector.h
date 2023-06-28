@@ -25,6 +25,7 @@
         size_t (*capacity) (struct vector_##name *);               \
         type * (*data)     (struct vector_##name *);               \
         void   (*reserve)  (struct vector_##name *, size_t);       \
+        void   (*destroy)  (struct vector_##name *);               \
     }
 
 #define vector(type) vector_named(type, type)
@@ -78,6 +79,10 @@ static inline void vector_##name##_reserve(struct vector_##name * v, size_t newS
     v->cap = newSize;                                                                               \
 }                                                                                                   \
                                                                                                     \
+static inline void vector_##name##_destroy(struct vector_##name * v) {                              \
+    free(v->content);                                                                               \
+}                                                                                                   \
+                                                                                                    \
 static inline void vector_##name##_create(struct vector_##name * v) {                               \
     v->count     = 0;                                                                               \
     v->cap       = 0;                                                                               \
@@ -91,7 +96,8 @@ static inline void vector_##name##_create(struct vector_##name * v) {           
     v->capacity  = &vector_##name##_capacity;                                                       \
     v->data      = &vector_##name##_data;                                                           \
     v->reserve   = &vector_##name##_reserve;                                                        \
-}
+    v->destroy   = &vector_##name##_destroy;                                                        \
+}                                                                                                   \
 
 
 #define typedef_vector_named(name, type)        \
