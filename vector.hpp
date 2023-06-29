@@ -61,10 +61,26 @@ public:                                                                     \
         return underlying;                                                  \
     }                                                                       \
                                                                             \
+    const vector_##name & data() const {                                    \
+        return underlying;                                                  \
+    }                                                                       \
+                                                                            \
     operator vector_##name *() {                                            \
         return &underlying;                                                 \
     }                                                                       \
-}                                                                           \
+                                                                            \
+    operator const vector_##name *() const {                                \
+        return &underlying;                                                 \
+    }                                                                       \
+                                                                            \
+    vector_##name * operator->() {                                          \
+        return *this;                                                       \
+    }                                                                       \
+                                                                            \
+    const vector_##name * operator->() const {                              \
+        return *this;                                                       \
+    }                                                                       \
+};                                                                          \
 }                                                                           \
 
 
