@@ -56,7 +56,17 @@ static inline type vector_##name##_pop_back(struct vector_##name * v) {         
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_insert(struct vector_##name * v, type value, size_t position) {  \
+    if (position >= v->count) {                                                                     \
+        v->push_back(v, value);                                                                     \
+        return;                                                                                     \
+    }                                                                                               \
                                                                                                     \
+    if (v->cap < v->count) {                                                                        \
+        v->reserve(v, v->cap * 2);                                                                  \
+    }                                                                                               \
+    memmove(&v->content[position + 1], &v->content[position], (v->count - position) * sizeof(type));\
+    v->content[position] = value;                                                                   \
+    v->count++;                                                                                     \
 }                                                                                                   \
                                                                                                     \
 static inline type vector_##name##_remove(struct vector_##name * v, size_t position) {              \
