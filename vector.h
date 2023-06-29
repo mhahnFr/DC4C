@@ -49,7 +49,7 @@ static inline void vector_##name##_reserve(struct vector_##name * v, size_t newS
         return;                                                                                     \
     }                                                                                               \
                                                                                                     \
-    type * tmp = malloc(sizeof(type) * newSize);                                                    \
+    type * tmp = (type *) malloc(sizeof(type) * newSize);                                           \
     if (tmp == NULL) {                                                                              \
         return;                                                                                     \
     }                                                                                               \
@@ -94,19 +94,19 @@ static inline type vector_##name##_erase(struct vector_##name * v, size_t positi
     return toReturn;                                                                                \
 }                                                                                                   \
                                                                                                     \
-static inline size_t vector_##name##_size(struct vector_##name * v) {                               \
+static inline size_t vector_##name##_size(const struct vector_##name * v) {                         \
     return v->count;                                                                                \
 }                                                                                                   \
                                                                                                     \
-static inline size_t vector_##name##_capacity(struct vector_##name * v) {                           \
+static inline size_t vector_##name##_capacity(const struct vector_##name * v) {                     \
     return v->cap;                                                                                  \
 }                                                                                                   \
                                                                                                     \
-static inline type * vector_##name##_data(struct vector_##name * v) {                               \
+static inline type * vector_##name##_data(const struct vector_##name * v) {                         \
     return v->content;                                                                              \
 }                                                                                                   \
                                                                                                     \
-static inline void vector_##name##_destroy(struct vector_##name * v) {                              \
+static inline void vector_##name##_destroy(const struct vector_##name * v) {                        \
     free(v->content);                                                                               \
 }                                                                                                   \
                                                                                                     \
@@ -114,7 +114,8 @@ static inline void vector_##name##_clear(struct vector_##name * v) {            
     v->count = 0;                                                                                   \
 }                                                                                                   \
                                                                                                     \
-static inline void vector_##name##_copy(struct vector_##name * lhs, struct vector_##name * rhs) {   \
+static inline void vector_##name##_copy(      struct vector_##name * lhs,                           \
+                                        const struct vector_##name * rhs) {                         \
     *lhs     = *rhs;                                                                                \
     lhs->cap = 0;                                                                                   \
     vector_##name##_reserve(lhs, rhs->cap);                                                         \
