@@ -139,6 +139,14 @@ static inline void vector_##name##_create(struct vector_##name * v) {           
 }                                                                                                   \
 
 
+#ifdef __cplusplus
+# include "vector.hpp"
+# define vector_methods(type, name) vector_methods_c(type, name) \
+                                    vector_methods_cxx(type, name)
+#else
+# define vector_methods(type, name) vector_methods_c(type, name)
+#endif
+
 #define typedef_vector_named(name, type)        \
 vector_named(name, type);                       \
 vector_methods(type, name)                      \
