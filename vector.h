@@ -32,7 +32,7 @@
         void   (*push_back)(struct vector_##name *, type);         \
         type   (*pop_back) (struct vector_##name *);               \
         void   (*insert)   (struct vector_##name *, type, size_t); \
-        type   (*remove)   (struct vector_##name *, size_t);       \
+        type   (*erase)    (struct vector_##name *, size_t);       \
         size_t (*size)     (struct vector_##name *);               \
         size_t (*capacity) (struct vector_##name *);               \
         type * (*data)     (struct vector_##name *);               \
@@ -69,7 +69,7 @@ static inline void vector_##name##_insert(struct vector_##name * v, type value, 
     v->count++;                                                                                     \
 }                                                                                                   \
                                                                                                     \
-static inline type vector_##name##_remove(struct vector_##name * v, size_t position) {              \
+static inline type vector_##name##_erase(struct vector_##name * v, size_t position) {               \
     type toReturn = v->content[position];                                                           \
     memmove(&v->content[position],                                                                  \
             &v->content[position + 1],                                                              \
@@ -117,7 +117,7 @@ static inline void vector_##name##_create(struct vector_##name * v) {           
     v->push_back = &vector_##name##_push_back;                                                      \
     v->pop_back  = &vector_##name##_pop_back;                                                       \
     v->insert    = &vector_##name##_insert;                                                         \
-    v->remove    = &vector_##name##_remove;                                                         \
+    v->erase    = &vector_##name##_erase;                                                           \
     v->size      = &vector_##name##_size;                                                           \
     v->capacity  = &vector_##name##_capacity;                                                       \
     v->data      = &vector_##name##_data;                                                           \
