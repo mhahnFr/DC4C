@@ -40,7 +40,11 @@ static inline void vector_##name##_push_back(struct vector_##name * v, type valu
 }                                                                                                   \
                                                                                                     \
 static inline type vector_##name##_pop_back(struct vector_##name * v) {                             \
-    return (type) NULL;                                                                             \
+    if (v->count == 0) {                                                                            \
+        return;                                                                                     \
+    }                                                                                               \
+                                                                                                    \
+    v->count--;                                                                                     \
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_insert(struct vector_##name * v, type value, size_t position) {  \
