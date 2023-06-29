@@ -37,6 +37,7 @@
         size_t (*capacity) (struct vector_##name *);               \
         type * (*data)     (struct vector_##name *);               \
         void   (*reserve)  (struct vector_##name *, size_t);       \
+        void   (*clear)    (struct vector_##name *);               \
         void   (*destroy)  (struct vector_##name *);               \
     }
 
@@ -109,6 +110,10 @@ static inline void vector_##name##_destroy(struct vector_##name * v) {          
     free(v->content);                                                                               \
 }                                                                                                   \
                                                                                                     \
+static inline void vector_##name##_clear(struct vector_##name * v) {                                \
+v->count = 0;                                                                                       \
+}                                                                                                   \
+                                                                                                    \
 static inline void vector_##name##_create(struct vector_##name * v) {                               \
     v->count     = 0;                                                                               \
     v->cap       = 0;                                                                               \
@@ -117,12 +122,13 @@ static inline void vector_##name##_create(struct vector_##name * v) {           
     v->push_back = &vector_##name##_push_back;                                                      \
     v->pop_back  = &vector_##name##_pop_back;                                                       \
     v->insert    = &vector_##name##_insert;                                                         \
-    v->erase    = &vector_##name##_erase;                                                           \
+    v->erase     = &vector_##name##_erase;                                                          \
     v->size      = &vector_##name##_size;                                                           \
     v->capacity  = &vector_##name##_capacity;                                                       \
     v->data      = &vector_##name##_data;                                                           \
     v->reserve   = &vector_##name##_reserve;                                                        \
     v->destroy   = &vector_##name##_destroy;                                                        \
+    v->clear     = &vector_##name##_clear;                                                          \
 }                                                                                                   \
 
 
