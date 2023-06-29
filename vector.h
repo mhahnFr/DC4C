@@ -43,10 +43,26 @@
 
 #define vector(type) vector_named(type, type)
 
-#define vector_methods(type, name)                                                                  \
+#define vector_methods_c(type, name)                                                                \
+static inline void vector_##name##_reserve(struct vector_##name * v, size_t newSize) {              \
+    if (v->cap >= newSize) {                                                                        \
+        return;                                                                                     \
+    }                                                                                               \
+                                                                                                    \
+    type * tmp = malloc(sizeof(type) * newSize);                                                    \
+    if (tmp == NULL) {                                                                              \
+        return;                                                                                     \
+    }                                                                                               \
+                                                                                                    \
+    memcpy(tmp, v->content, v->count * sizeof(type));                                               \
+    free(v->content);                                                                               \
+    v->content = tmp;                                                                               \
+    v->cap = newSize;                                                                               \
+}                                                                                                   \
+                                                                                                    \
 static inline void vector_##name##_push_back(struct vector_##name * v, type value) {                \
     if (v->cap < v->count + 1) {                                                                    \
-        v->reserve(v, v->cap == 0 ? 1 : v->cap * 2);                                                \
+        vector_##name##_reserve(v, v->cap == 0 ? 1 : v->cap * 2);                                   \
     }                                                                                               \
                                                                                                     \
     v->content[v->count++] = value;                                                                 \
@@ -58,7 +74,7 @@ static inline type vector_##name##_pop_back(struct vector_##name * v) {         
                                                                                                     \
 static inline void vector_##name##_insert(struct vector_##name * v, type value, size_t position) {  \
     if (position >= v->count) {                                                                     \
-        v->push_back(v, value);                                                                     \
+        vector_##name##_push_back(v, value);                                                        \
         return;                                                                                     \
     }                                                                                               \
                                                                                                     \
@@ -88,22 +104,6 @@ static inline size_t vector_##name##_capacity(struct vector_##name * v) {       
                                                                                                     \
 static inline type * vector_##name##_data(struct vector_##name * v) {                               \
     return v->content;                                                                              \
-}                                                                                                   \
-                                                                                                    \
-static inline void vector_##name##_reserve(struct vector_##name * v, size_t newSize) {              \
-    if (v->cap >= newSize) {                                                                        \
-        return;                                                                                     \
-    }                                                                                               \
-                                                                                                    \
-    type * tmp = malloc(sizeof(type) * newSize);                                                    \
-    if (tmp == NULL) {                                                                              \
-        return;                                                                                     \
-    }                                                                                               \
-                                                                                                    \
-    memcpy(tmp, v->content, v->count * sizeof(type));                                               \
-    free(v->content);                                                                               \
-    v->content = tmp;                                                                               \
-    v->cap = newSize;                                                                               \
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_destroy(struct vector_##name * v) {                              \
