@@ -70,7 +70,11 @@ static inline void vector_##name##_insert(struct vector_##name * v, type value, 
 }                                                                                                   \
                                                                                                     \
 static inline type vector_##name##_remove(struct vector_##name * v, size_t position) {              \
-    return (type) NULL;                                                                             \
+    type toReturn = v->content[position];                                                           \
+    memmove(&v->content[position],                                                                  \
+            &v->content[position + 1],                                                              \
+            (--v->count - position) * sizeof(type));                                                \
+    return toReturn;                                                                                \
 }                                                                                                   \
                                                                                                     \
 static inline size_t vector_##name##_size(struct vector_##name * v) {                               \
