@@ -61,7 +61,7 @@ static inline void vector_##name##_insert(struct vector_##name * v, type value, 
         return;                                                                                     \
     }                                                                                               \
                                                                                                     \
-    if (v->cap < v->count) {                                                                        \
+    if (v->cap < v->count + 1) {                                                                    \
         v->reserve(v, v->cap * 2);                                                                  \
     }                                                                                               \
     memmove(&v->content[position + 1], &v->content[position], (v->count - position) * sizeof(type));\
