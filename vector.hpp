@@ -56,6 +56,14 @@ public:                                                                     \
         other.underlying = {};                                              \
         return *this;                                                       \
     }                                                                       \
+                                                                            \
+    vector_##name & data() {                                                \
+        return underlying;                                                  \
+    }                                                                       \
+                                                                            \
+    operator vector_##name *() {                                            \
+        return &underlying;                                                 \
+    }                                                                       \
 }                                                                           \
 }                                                                           \
 
