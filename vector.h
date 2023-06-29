@@ -111,7 +111,14 @@ static inline void vector_##name##_destroy(struct vector_##name * v) {          
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_clear(struct vector_##name * v) {                                \
-v->count = 0;                                                                                       \
+    v->count = 0;                                                                                   \
+}                                                                                                   \
+                                                                                                    \
+static inline void vector_##name##_copy(struct vector_##name * lhs, struct vector_##name * rhs) {   \
+    *lhs     = *rhs;                                                                                \
+    lhs->cap = 0;                                                                                   \
+    vector_##name##_reserve(lhs, rhs->cap);                                                         \
+    memcpy(lhs->content, rhs->content, rhs->count);                                                 \
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_create(struct vector_##name * v) {                               \
