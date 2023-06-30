@@ -33,12 +33,12 @@
         type   (*pop_back) (struct vector_##name *);               \
         void   (*insert)   (struct vector_##name *, type, size_t); \
         type   (*erase)    (struct vector_##name *, size_t);       \
-        size_t (*size)     (struct vector_##name *);               \
-        size_t (*capacity) (struct vector_##name *);               \
-        type * (*data)     (struct vector_##name *);               \
         void   (*reserve)  (struct vector_##name *, size_t);       \
         void   (*clear)    (struct vector_##name *);               \
-        void   (*destroy)  (struct vector_##name *);               \
+        void   (*destroy)  (const struct vector_##name *);         \
+        size_t (*size)     (const struct vector_##name *);         \
+        size_t (*capacity) (const struct vector_##name *);         \
+        type * (*data)     (const struct vector_##name *);         \
     }
 
 #define vector(type) vector_named(type, type)
