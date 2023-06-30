@@ -20,6 +20,10 @@
 #ifndef vector_h
 #define vector_h
 
+#if !__STDC_VERSION__ && !__cplusplus
+ #error This library requires C99 or newer.
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 
