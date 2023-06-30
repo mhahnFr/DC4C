@@ -17,6 +17,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#if __cplusplus < 201103
+ #error This library requires C++11 or newer.
+#endif
+
 #ifndef vector_h
  #warning Wrong inclusion of "vector.hpp" redirected to #include "vector.h"!
  #include "vector.h"
