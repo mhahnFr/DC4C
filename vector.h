@@ -91,7 +91,7 @@ static inline void vector_##name##_insert(struct vector_##name * v, type value, 
     }                                                                                               \
                                                                                                     \
     if (v->cap < v->count + 1) {                                                                    \
-        v->reserve(v, v->cap * 2);                                                                  \
+        vector_##name##_reserve(v, v->cap * 2);                                                     \
     }                                                                                               \
     memmove(&v->content[position + 1], &v->content[position], (v->count - position) * sizeof(type));\
     v->content[position] = value;                                                                   \
@@ -132,7 +132,7 @@ static inline void vector_##name##_copy(      struct vector_##name * lhs,       
     lhs->cap = 0;                                                                                   \
     vector_##name##_reserve(lhs, rhs->cap);                                                         \
     memcpy(lhs->content, rhs->content, rhs->count);                                                 \
-}                                                                                                   \
+}
 
 #define vector_create_named(name)                                     \
 static inline void vector_##name##_create(struct vector_##name * v) { \
