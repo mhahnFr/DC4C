@@ -45,7 +45,15 @@
         type * (*data)     (const struct vector_##name *);         \
     }
 
-#define vector(type) vector_named(type, type)
+#define vector_light_named(name, type) \
+    struct vector_##name {             \
+        size_t count;                  \
+        size_t cap;                    \
+        type * content;                \
+    }
+
+#define vector(type)       vector_named(type, type)
+#define vector_light(type) vector_light_named(type, type)
 
 #define vector_methods_c(type, name)                                                                \
 static inline void vector_##name##_reserve(struct vector_##name * v, size_t newSize) {              \
@@ -125,37 +133,51 @@ static inline void vector_##name##_copy(      struct vector_##name * lhs,       
     vector_##name##_reserve(lhs, rhs->cap);                                                         \
     memcpy(lhs->content, rhs->content, rhs->count);                                                 \
 }                                                                                                   \
-                                                                                                    \
-static inline void vector_##name##_create(struct vector_##name * v) {                               \
-    v->count     = 0;                                                                               \
-    v->cap       = 0;                                                                               \
-    v->content   = NULL;                                                                            \
-                                                                                                    \
-    v->push_back = &vector_##name##_push_back;                                                      \
-    v->pop_back  = &vector_##name##_pop_back;                                                       \
-    v->insert    = &vector_##name##_insert;                                                         \
-    v->erase     = &vector_##name##_erase;                                                          \
-    v->size      = &vector_##name##_size;                                                           \
-    v->capacity  = &vector_##name##_capacity;                                                       \
-    v->data      = &vector_##name##_data;                                                           \
-    v->reserve   = &vector_##name##_reserve;                                                        \
-    v->destroy   = &vector_##name##_destroy;                                                        \
-    v->clear     = &vector_##name##_clear;                                                          \
-}                                                                                                   \
 
+#define vector_create_named(name)                                     \
+static inline void vector_##name##_create(struct vector_##name * v) { \
+    v->count     = 0;                                                 \
+    v->cap       = 0;                                                 \
+    v->content   = NULL;                                              \
+                                                                      \
+    v->push_back = &vector_##name##_push_back;                        \
+    v->pop_back  = &vector_##name##_pop_back;                         \
+    v->insert    = &vector_##name##_insert;                           \
+    v->erase     = &vector_##name##_erase;                            \
+    v->size      = &vector_##name##_size;                             \
+    v->capacity  = &vector_##name##_capacity;                         \
+    v->data      = &vector_##name##_data;                             \
+    v->reserve   = &vector_##name##_reserve;                          \
+    v->destroy   = &vector_##name##_destroy;                          \
+    v->clear     = &vector_##name##_clear;                            \
+}
+
+#define vector_light_create_named(name)                               \
+static inline void vector_##name##_create(struct vector_##name * v) { \
+    v->count = 0;                                                     \
+    v->cap   = 0;                                                     \
+    v->content = NULL;                                                \
+}
 
 #ifdef __cplusplus
- #define vector_methods(type, name) vector_methods_c(type, name) \
-                                    vector_methods_cxx(type, name)
+ #define vector_methods(type, name, create) vector_methods_c(type, name)   \
+                                            create(name)                   \
+                                            vector_methods_cxx(type, name)
 #else
- #define vector_methods(type, name) vector_methods_c(type, name)
+ #define vector_methods(type, name, create) vector_methods_c(type, name) \
+                                            create(name)
 #endif
 
-#define typedef_vector_named(name, type)        \
-vector_named(name, type);                       \
-vector_methods(type, name)                      \
-typedef struct vector_##name vector_##name##_t
+#define typedef_vector_named(name, type) vector_named(name, type);                       \
+                                         vector_methods(type, name, vector_create_named) \
+                                         typedef struct vector_##name vector_##name##_t
 
 #define typedef_vector(type) typedef_vector_named(type, type)
+
+#define typedef_vector_light_named(name, type) vector_light_named(name, type);                       \
+                                               vector_methods(type, name, vector_light_create_named) \
+                                               typedef struct vector_##name vector_##name##_t
+
+#define typedef_vector_light(type) typedef_vector_light_named(type, type)
 
 #endif /* vector_h */
