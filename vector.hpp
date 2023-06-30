@@ -28,6 +28,8 @@
  #ifndef vector_hpp
  #define vector_hpp
 
+ #include <vector>
+
  #define vector_methods_cxx(type, name)                                      \
  namespace dc4c {                                                            \
  class vector_bridge_##name {                                                \
@@ -46,6 +48,15 @@
          vector_##name##_destroy(&underlying);                               \
          underlying = other.underlying;                                      \
          other.underlying = {};                                              \
+     }                                                                       \
+                                                                             \
+     vector_bridge_##name(const std::vector<type> & other) {                 \
+         vector_##name##_create(&underlying);                                \
+         vector_##name##_reserve(&underlying, other.capacity());             \
+                                                                             \
+         for (const auto & element : other) {                                \
+             vector_##name##_push_back(&underlying, element);                \
+         }                                                                   \
      }                                                                       \
                                                                              \
      ~vector_bridge_##name() {                                               \
@@ -79,6 +90,15 @@
                                                                              \
      operator const vector_##name *() const {                                \
          return &underlying;                                                 \
+     }                                                                       \
+                                                                             \
+     inline operator std::vector<type>() const {                             \
+         auto toReturn = std::vector<type>();                                \
+         toReturn.reserve(underlying.cap);                                   \
+         for (size_t i = 0; i < underlying.count; ++i) {                     \
+             toReturn.push_back(underlying.content[i]);                      \
+         }                                                                   \
+         return toReturn;                                                    \
      }                                                                       \
                                                                              \
      vector_##name * operator->() {                                          \
