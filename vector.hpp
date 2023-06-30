@@ -112,6 +112,14 @@
      type & operator[](const size_t position) const noexcept {               \
          return underlying.content[position];                                \
      }                                                                       \
+                                                                             \
+     type * begin() const noexcept {                                         \
+         return underlying.content;                                          \
+     }                                                                       \
+                                                                             \
+     type * end() const noexcept {                                           \
+         return underlying.content + underlying.count;                       \
+     }                                                                       \
  };                                                                          \
  }                                                                           \
  
