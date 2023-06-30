@@ -80,6 +80,10 @@ public:                                                                     \
     const vector_##name * operator->() const {                              \
         return *this;                                                       \
     }                                                                       \
+                                                                            \
+    type & operator[](const size_t position) const noexcept {               \
+        return underlying.content[position];                                \
+    }                                                                       \
 };                                                                          \
 }                                                                           \
 
