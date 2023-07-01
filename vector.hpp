@@ -59,6 +59,14 @@
          }                                                                                 \
      }                                                                                     \
                                                                                            \
+     template<typename InputIt>                                                            \
+     inline vector_bridge_##name(InputIt begin, InputIt end) {                             \
+         vector_##name##_create(&underlying);                                              \
+         for (; begin != end; ++begin) {                                                   \
+             vector_##name##_push_back(&underlying, *begin);                               \
+         }                                                                                 \
+     }                                                                                     \
+                                                                                           \
      inline ~vector_bridge_##name() {                                                      \
          vector_##name##_destroy(&underlying);                                             \
      }                                                                                     \
