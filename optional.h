@@ -1,0 +1,42 @@
+/*
+ * DC4C - Standard data containers for C
+ *
+ * Copyright (C) 2023  mhahnFr
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef optional_h
+#define optional_h
+
+#include <stdbool.h>
+
+#define optional_named(name, type) \
+    struct optional_##name {       \
+        bool has_value;            \
+        type value;                \
+    }
+
+#define optional(type) optional_named(type, type)
+
+#define optional_methods(type, name) // TODO: Implement
+
+#define typedef_optional_named(name, type) \
+optional_named(name, type);                \
+optional_methods(type, name)               \
+typedef struct optional_##name optional_##name##_t
+
+#define typedef_optional(type) typedef_optional_named(type, type)
+
+#endif /* optional_h */
