@@ -22,20 +22,32 @@
 
 #include <stdbool.h>
 
-#define optional_named(name, type) \
-    struct optional_##name {       \
-        bool has_value;            \
-        type value;                \
-    }
+#ifdef __cplusplus
+ #define optional_namespace_begin namespace dc4c {
+ #define optional_namespace_end   ; }
+ #define optional_namespace_name  dc4c::
+#else
+ #define optional_namespace_begin
+ #define optional_namespace_end
+ #define optional_namespace_name
+#endif
 
-#define optional(type) optional_named(type, type)
+#define optional_named(name, type) \
+    optional_namespace_begin       \
+        struct optional_##name {   \
+            bool has_value;        \
+            type value;            \
+        }                          \
+    optional_namespace_end
+
+#define dc4c_optional(type) optional_named(type, type)
 
 #define optional_methods(type, name) // TODO: Implement
 
 #define typedef_optional_named(name, type) \
 optional_named(name, type);                \
 optional_methods(type, name)               \
-typedef struct optional_##name optional_##name##_t
+typedef struct optional_namespace_name optional_##name optional_##name##_t
 
 #define typedef_optional(type) typedef_optional_named(type, type)
 
