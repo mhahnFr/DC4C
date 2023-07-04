@@ -56,7 +56,7 @@
         type * content;                \
     }
 
-#define vector(type)       vector_named(type, type)
+#define dc4c_vector(type)  vector_named(type, type)
 #define vector_light(type) vector_light_named(type, type)
 
 #define vector_methods_c(type, name)                                                                \
