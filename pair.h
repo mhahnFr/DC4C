@@ -40,7 +40,10 @@
 
 #define dc4c_pair(type1, type2) pair_named(type1 ## _ ## type2, type1, type2)
 
-#define pair_methods(type1, type2, name) // TODO: Implement
+#define pair_methods(type1, type2, name) \
+static inline struct pair_namespace_name pair_##name make_pair_##name(type1 first, type2 second) { \
+    return { .first = first, .second = second };                                                   \
+}
 
 #define typedef_pair_named(name, type1, type2) \
 pair_named(name, type1, type2);                \
