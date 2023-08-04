@@ -65,15 +65,13 @@ static inline void vector_##name##_reserve(struct vector_##name * v, size_t newS
         return;                                                                                     \
     }                                                                                               \
                                                                                                     \
-    type * tmp = (type *) malloc(sizeof(type) * newSize);                                           \
+    type * tmp = (type *) realloc(v->content, sizeof(type) * newSize);                              \
     if (tmp == NULL) {                                                                              \
         return;                                                                                     \
     }                                                                                               \
                                                                                                     \
-    memcpy(tmp, v->content, v->count * sizeof(type));                                               \
-    free(v->content);                                                                               \
     v->content = tmp;                                                                               \
-    v->cap = newSize;                                                                               \
+    v->cap     = newSize;                                                                           \
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_push_back(struct vector_##name * v, type value) {                \
