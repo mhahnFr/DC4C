@@ -24,6 +24,7 @@
  #error This library requires C99 or newer.
 #endif
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -37,11 +38,11 @@
         size_t cap;                                                \
         type * content;                                            \
                                                                    \
-        void   (*push_back)(struct vector_##name *, type);         \
+        bool   (*push_back)(struct vector_##name *, type);         \
         type   (*pop_back) (struct vector_##name *);               \
-        void   (*insert)   (struct vector_##name *, type, size_t); \
+        bool   (*insert)   (struct vector_##name *, type, size_t); \
         type   (*erase)    (struct vector_##name *, size_t);       \
-        void   (*reserve)  (struct vector_##name *, size_t);       \
+        bool   (*reserve)  (struct vector_##name *, size_t);       \
         void   (*clear)    (struct vector_##name *);               \
         void   (*destroy)  (const struct vector_##name *);         \
         size_t (*size)     (const struct vector_##name *);         \
@@ -60,44 +61,53 @@
 #define vector_light(type) vector_light_named(type, type)
 
 #define vector_methods_c(type, name)                                                                \
-static inline void vector_##name##_reserve(struct vector_##name * v, size_t newSize) {              \
+static inline bool vector_##name##_reserve(struct vector_##name * v, size_t newSize) {              \
     if (v->cap >= newSize) {                                                                        \
-        return;                                                                                     \
+        return true;                                                                                \
     }                                                                                               \
                                                                                                     \
     type * tmp = (type *) realloc(v->content, sizeof(type) * newSize);                              \
     if (tmp == NULL) {                                                                              \
-        return;                                                                                     \
+        return false;                                                                               \
     }                                                                                               \
                                                                                                     \
     v->content = tmp;                                                                               \
     v->cap     = newSize;                                                                           \
+                                                                                                    \
+    return true;                                                                                    \
 }                                                                                                   \
                                                                                                     \
-static inline void vector_##name##_push_back(struct vector_##name * v, type value) {                \
+static inline bool vector_##name##_push_back(struct vector_##name * v, type value) {                \
     if (v->cap < v->count + 1) {                                                                    \
-        vector_##name##_reserve(v, v->cap == 0 ? 1 : v->cap * 2);                                   \
+        if (!vector_##name##_reserve(v, v->cap == 0 ? 1 : v->cap * 2)) {                            \
+            return false;                                                                           \
+        }                                                                                           \
     }                                                                                               \
                                                                                                     \
     v->content[v->count++] = value;                                                                 \
+                                                                                                    \
+    return true;                                                                                    \
 }                                                                                                   \
                                                                                                     \
 static inline type vector_##name##_pop_back(struct vector_##name * v) {                             \
     return v->content[v->count--];                                                                  \
 }                                                                                                   \
                                                                                                     \
-static inline void vector_##name##_insert(struct vector_##name * v, type value, size_t position) {  \
+static inline bool vector_##name##_insert(struct vector_##name * v, type value, size_t position) {  \
     if (position >= v->count) {                                                                     \
-        vector_##name##_push_back(v, value);                                                        \
-        return;                                                                                     \
+        return vector_##name##_push_back(v, value);                                                 \
     }                                                                                               \
                                                                                                     \
     if (v->cap < v->count + 1) {                                                                    \
-        vector_##name##_reserve(v, v->cap * 2);                                                     \
+        if (!vector_##name##_reserve(v, v->cap * 2)) {                                              \
+            return false;                                                                           \
+        }                                                                                           \
     }                                                                                               \
     memmove(&v->content[position + 1], &v->content[position], (v->count - position) * sizeof(type));\
     v->content[position] = value;                                                                   \
     v->count++;                                                                                     \
+                                                                                                    \
+    return true;                                                                                    \
 }                                                                                                   \
                                                                                                     \
 static inline type vector_##name##_erase(struct vector_##name * v, size_t position) {               \
