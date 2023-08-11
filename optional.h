@@ -42,7 +42,23 @@
 
 #define dc4c_optional(type) optional_named(type, type)
 
-#define optional_methods(type, name) // TODO: Implement
+#if defined(__cplusplus) && __cplusplus >= 201703L
+ #include <optional>
+
+ #define optional_cpp_conversions(type, name)                                                     \
+ constexpr static inline auto to_cpp(const dc4c::optional_##name & self) -> std::optional<type> { \
+     if (self.has_value) {                                                                        \
+         return self.value;                                                                       \
+     } else {                                                                                     \
+         return std::nullopt;                                                                     \
+     }                                                                                            \
+ }
+#else
+ #define optional_cpp_conversions(type, name)
+#endif
+
+#define optional_methods(type, name) \
+optional_cpp_conversions(type, name)
 
 #define typedef_optional_named(name, type) \
 optional_named(name, type);                \
