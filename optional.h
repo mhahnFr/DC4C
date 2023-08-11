@@ -52,6 +52,14 @@
      } else {                                                                                     \
          return std::nullopt;                                                                     \
      }                                                                                            \
+ }                                                                                                \
+                                                                                                  \
+ constexpr static inline auto to_dc4c(const std::optional<type> & opt) -> dc4c::optional_##name { \
+     if (opt.has_value()) {                                                                       \
+         return { true, opt.value() };                                                            \
+     }                                                                                            \
+                                                                                                  \
+     return { .has_value = false };                                                               \
  }
 #else
  #define optional_cpp_conversions(type, name)
