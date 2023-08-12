@@ -46,6 +46,7 @@
  #include <optional>
 
  #define optional_cpp_conversions(type, name)                                                     \
+ namespace dc4c {                                                                                 \
  constexpr static inline auto to_cpp(const dc4c::optional_##name & self) -> std::optional<type> { \
      if (self.has_value) {                                                                        \
          return self.value;                                                                       \
@@ -60,6 +61,7 @@
      }                                                                                            \
                                                                                                   \
      return { .has_value = false };                                                               \
+ }                                                                                                \
  }
 #else
  #define optional_cpp_conversions(type, name)
