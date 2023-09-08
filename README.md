@@ -3,6 +3,13 @@ This repository contains a few data containers written in and for the C programm
 
 The name stands for **D**ata **C**ontainers **for** **C**.
 
+## Containers
+### Vector
+A vector similar to the `std::vector` of the C++ standard library is available. It comes with a
+C++ wrapper, providing the usual constructors.
+
+Additionally, the C++ wrapper comes with functions for the inter-operability with C++'s `std::vector`.
+
 ### Final notes
 This repository is licensed under the terms of the GPL 3.0.
 
