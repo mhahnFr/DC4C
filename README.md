@@ -14,6 +14,7 @@ Additionally, the C++ wrapper comes with functions for the inter-operability wit
 An optional similar to the `std::vector` of the C++ standard library is available.
 
 ### Pair
+A pair similar to the `std::pair` of the C++ standard library is available.
 
 ### Final notes
 This repository is licensed under the terms of the GPL 3.0.
