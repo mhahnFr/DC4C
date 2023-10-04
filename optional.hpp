@@ -42,7 +42,7 @@
           return { true, opt.value() };                                                            \
       }                                                                                            \
                                                                                                    \
-      return { .has_value = false };                                                               \
+      return { false };                                                                            \
   }                                                                                                \
   }
  #else
