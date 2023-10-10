@@ -50,7 +50,7 @@
  #endif
  
  #define optional_namespace_begin namespace dc4c {
- #define optional_namespace_end   ; }
+ #define optional_namespace_end   }
  #define optional_namespace_name  dc4c::
 
  #endif /* optional_hpp */

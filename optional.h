@@ -36,7 +36,7 @@
         struct optional_##name {   \
             bool has_value;        \
             type value;            \
-        }                          \
+        };                         \
     optional_namespace_end
 
 #define dc4c_optional(type) optional_named(type, type)
@@ -45,7 +45,7 @@
 optional_methods_cxx(type, name)
 
 #define typedef_optional_named(name, type) \
-optional_named(name, type);                \
+optional_named(name, type)                 \
 optional_methods(type, name)               \
 typedef struct optional_namespace_name optional_##name optional_##name##_t
 
