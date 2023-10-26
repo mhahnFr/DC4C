@@ -32,9 +32,8 @@
   constexpr static inline auto to_cpp(const dc4c::optional_##name & self) -> std::optional<type> { \
       if (self.has_value) {                                                                        \
           return self.value;                                                                       \
-      } else {                                                                                     \
-          return std::nullopt;                                                                     \
       }                                                                                            \
+      return std::nullopt;                                                                         \
   }                                                                                                \
                                                                                                    \
   constexpr static inline auto to_dc4c(const std::optional<type> & opt) -> dc4c::optional_##name { \
@@ -42,7 +41,9 @@
           return { true, opt.value() };                                                            \
       }                                                                                            \
                                                                                                    \
-      return { false };                                                                            \
+      dc4c::optional_##name toReturn;                                                              \
+      toReturn.has_value = false;                                                                  \
+      return toReturn;                                                                             \
   }                                                                                                \
   }
  #else
