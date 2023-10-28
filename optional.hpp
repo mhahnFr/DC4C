@@ -41,7 +41,7 @@
           return { true, opt.value() };                                                            \
       }                                                                                            \
                                                                                                    \
-      dc4c::optional_##name toReturn;                                                              \
+      auto toReturn = dc4c::optional_##name();                                                     \
       toReturn.has_value = false;                                                                  \
       return toReturn;                                                                             \
   }                                                                                                \
