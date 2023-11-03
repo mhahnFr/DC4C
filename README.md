@@ -11,7 +11,7 @@ C++ wrapper, providing the usual constructors.
 Additionally, the C++ wrapper comes with functions for the inter-operability with C++'s `std::vector`.
 
 ### Optional
-An optional similar to the `std::vector` of the C++ standard library is available.
+An optional similar to the `std::optional` of the C++17 standard library is available.
 
 ### Pair
 A pair similar to the `std::pair` of the C++ standard library is available.
