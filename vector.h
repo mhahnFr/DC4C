@@ -146,6 +146,13 @@ static inline void vector_##name##_copy(      struct vector_##name * lhs,       
     memcpy(lhs->content, rhs->content, rhs->count);                                                 \
 }
 
+#define vector_initer(name)                                     \
+static inline struct vector_##name vector_##name##_init(void) { \
+    struct vector_##name tmp;                                   \
+    vector_##name##_create(&tmp);                               \
+    return tmp;                                                 \
+}
+
 #define vector_create_named(name)                                     \
 static inline void vector_##name##_create(struct vector_##name * v) { \
     v->count     = 0;                                                 \
@@ -162,14 +169,18 @@ static inline void vector_##name##_create(struct vector_##name * v) { \
     v->reserve   = &vector_##name##_reserve;                          \
     v->destroy   = &vector_##name##_destroy;                          \
     v->clear     = &vector_##name##_clear;                            \
-}
+}                                                                     \
+                                                                      \
+vector_initer(name)
 
 #define vector_light_create_named(name)                               \
 static inline void vector_##name##_create(struct vector_##name * v) { \
     v->count = 0;                                                     \
     v->cap   = 0;                                                     \
     v->content = NULL;                                                \
-}
+}                                                                     \
+                                                                      \
+vector_initer(name)
 
 #ifdef __cplusplus
  #define vector_methods(type, name, create) vector_methods_c(type, name)   \
