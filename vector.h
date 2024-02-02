@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Copyright (C) 2023  mhahnFr
+ * Copyright (C) 2023 - 2024  mhahnFr
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -191,5 +191,17 @@ static inline void vector_##name##_create(struct vector_##name * v) { \
                                                typedef struct vector_##name vector_##name##_t
 
 #define typedef_vector_light(type) typedef_vector_light_named(type, type)
+
+#define vector_iterate(type, vectorPtr, block)    \
+for (size_t i = 0; i < (vectorPtr)->count; ++i) { \
+    type* element = &(vectorPtr)->content[i];     \
+    { block }                                     \
+}
+
+#define vector_forEach(type, vectorPtr, varname, block) \
+for (size_t i = 0; i < (vectorPtr)->count; ++i) {       \
+    type* (varname) = &(vectorPtr)->content[i];         \
+    { block }                                           \
+}
 
 #endif /* vector_h */
