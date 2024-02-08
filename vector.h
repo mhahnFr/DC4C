@@ -215,4 +215,6 @@ for (size_t i = 0; i < (vectorPtr)->count; ++i) {       \
     { block }                                           \
 }
 
+#define vector_initializer { 0, 0, NULL }
+
 #endif /* vector_h */
