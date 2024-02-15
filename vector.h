@@ -131,10 +131,10 @@ static inline type * vector_##name##_data(const struct vector_##name * v) {     
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_destroyWith(struct vector_##name* me,                            \
-                                               void (*contentDestroy)(type*)) {                     \
+                                               void (*contentDestroy)(type)) {                      \
     if (contentDestroy != NULL) {                                                                   \
         for (size_t i = 0; i < me->count; ++i) {                                                    \
-            contentDestroy(&me->content[i]);                                                        \
+            contentDestroy(me->content[i]);                                                         \
         }                                                                                           \
     }                                                                                               \
     free(me->content);                                                                              \
