@@ -26,15 +26,15 @@
  
  #include <utility>
  
- #define pair_methods_cxx(type1, type2, name)                                                     \
- namespace dc4c {                                                                                 \
- constexpr static inline auto to_cpp(const dc4c::pair_##name & self) -> std::pair<type1, type2> { \
-     return std::make_pair(self.first, self.second);                                              \
- }                                                                                                \
-                                                                                                  \
- constexpr static inline auto to_dc4c(const std::pair<type1, type2> & p) -> dc4c::pair_##name {   \
-     return make_pair_##name(p.first, p.second);                                                  \
- }                                                                                                \
+ #define pair_methods_cxx(type1, type2, name)                                           \
+ namespace dc4c {                                                                       \
+ static inline auto to_cpp(const dc4c::pair_##name & self) -> std::pair<type1, type2> { \
+     return std::make_pair(self.first, self.second);                                    \
+ }                                                                                      \
+                                                                                        \
+ static inline auto to_dc4c(const std::pair<type1, type2> & p) -> dc4c::pair_##name {   \
+     return make_pair_##name(p.first, p.second);                                        \
+ }                                                                                      \
  }
  
  #define pair_namespace_begin namespace dc4c {
