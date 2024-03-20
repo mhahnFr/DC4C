@@ -41,7 +41,7 @@
 
 #define pair_methods(type1, type2, name)                                                           \
 static inline struct pair_namespace_name pair_##name make_pair_##name(type1 first, type2 second) { \
-    struct pair_namespace_name pair_##name toReturn = { .first = first, .second = second };        \
+    struct pair_namespace_name pair_##name toReturn = { first, second };                           \
     return toReturn;                                                                               \
 }                                                                                                  \
                                                                                                    \
