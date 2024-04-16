@@ -34,24 +34,26 @@
  #include "vector.hpp"
 #endif
 
-#define vector_named(name, type)                                    \
-    struct vector_##name {                                          \
-        size_t count;                                               \
-        size_t cap;                                                 \
-        type * content;                                             \
-                                                                    \
-        bool   (*push_back)  (struct vector_##name *, type);        \
-        type   (*pop_back)   (struct vector_##name *);              \
-        bool   (*insert)     (struct vector_##name *, type, size_t);\
-        type   (*erase)      (struct vector_##name *, size_t);      \
-        bool   (*reserve)    (struct vector_##name *, size_t);      \
-        void   (*clear)      (struct vector_##name *);              \
-        void   (*destroy)    (const struct vector_##name *);        \
-        void   (*destroyWith)(const struct vector_##name*,          \
-                              void (*)(type));                      \
-        size_t (*size)       (const struct vector_##name *);        \
-        size_t (*capacity)   (const struct vector_##name *);        \
-        type * (*data)       (const struct vector_##name *);        \
+#define vector_named(name, type)                                       \
+    struct vector_##name {                                             \
+        size_t count;                                                  \
+        size_t cap;                                                    \
+        type * content;                                                \
+                                                                       \
+        bool   (*push_back)     (struct vector_##name *, type);        \
+        type   (*pop_back)      (struct vector_##name *);              \
+        bool   (*insert)        (struct vector_##name *, type, size_t);\
+        type   (*erase)         (struct vector_##name *, size_t);      \
+        bool   (*reserve)       (struct vector_##name *, size_t);      \
+        void   (*clear)         (struct vector_##name *);              \
+        void   (*destroy)       (const struct vector_##name *);        \
+        void   (*destroyWith)   (const struct vector_##name*,          \
+                                 void (*)(type));                      \
+        void   (*destroyWithPtr)(const struct vector_##name*,          \
+                                 void (*)(type*));                     \
+        size_t (*size)          (const struct vector_##name *);        \
+        size_t (*capacity)      (const struct vector_##name *);        \
+        type * (*data)          (const struct vector_##name *);        \
     }
 
 #define vector_light_named(name, type) \
@@ -134,6 +136,10 @@ static inline type * vector_##name##_data(const struct vector_##name * v) {     
     return v->content;                                                                              \
 }                                                                                                   \
                                                                                                     \
+static inline void vector_##name##_destroy(const struct vector_##name * v) {                        \
+    free(v->content);                                                                               \
+}                                                                                                   \
+                                                                                                    \
 static inline void vector_##name##_destroyWith(const struct vector_##name* me,                      \
                                                void (*contentDestroy)(type)) {                      \
     if (contentDestroy != NULL) {                                                                   \
@@ -141,11 +147,15 @@ static inline void vector_##name##_destroyWith(const struct vector_##name* me,  
             contentDestroy(me->content[i]);                                                         \
         }                                                                                           \
     }                                                                                               \
-    free(me->content);                                                                              \
+    vector_##name##_destroy(me);                                                                    \
 }                                                                                                   \
                                                                                                     \
-static inline void vector_##name##_destroy(const struct vector_##name * v) {                        \
-    free(v->content);                                                                               \
+static inline void vector_##name##_destroyWithPtr(const struct vector_##name* me,                   \
+                                                  void (*contentDestroy)(type*)) {                  \
+    if (contentDestroy != NULL) {                                                                   \
+        vector_iterate(type, me, contentDestroy(element);)                                          \
+    }                                                                                               \
+    vector_##name##_destroy(me);                                                                    \
 }                                                                                                   \
                                                                                                     \
 static inline void vector_##name##_clear(struct vector_##name * v) {                                \
@@ -169,21 +179,22 @@ static inline struct vector_##name vector_##name##_init(void) { \
 
 #define vector_create_named(name)                                    \
 static inline void vector_##name##_create(struct vector_##name * v) {\
-    v->count       = 0;                                              \
-    v->cap         = 0;                                              \
-    v->content     = NULL;                                           \
+    v->count   = 0;                                                  \
+    v->cap     = 0;                                                  \
+    v->content = NULL;                                               \
                                                                      \
-    v->push_back   = &vector_##name##_push_back;                     \
-    v->pop_back    = &vector_##name##_pop_back;                      \
-    v->insert      = &vector_##name##_insert;                        \
-    v->erase       = &vector_##name##_erase;                         \
-    v->size        = &vector_##name##_size;                          \
-    v->capacity    = &vector_##name##_capacity;                      \
-    v->data        = &vector_##name##_data;                          \
-    v->reserve     = &vector_##name##_reserve;                       \
-    v->destroy     = &vector_##name##_destroy;                       \
-    v->destroyWith = &vector_##name##_destroyWith;                   \
-    v->clear       = &vector_##name##_clear;                         \
+    v->push_back      = &vector_##name##_push_back;                  \
+    v->pop_back       = &vector_##name##_pop_back;                   \
+    v->insert         = &vector_##name##_insert;                     \
+    v->erase          = &vector_##name##_erase;                      \
+    v->size           = &vector_##name##_size;                       \
+    v->capacity       = &vector_##name##_capacity;                   \
+    v->data           = &vector_##name##_data;                       \
+    v->reserve        = &vector_##name##_reserve;                    \
+    v->destroy        = &vector_##name##_destroy;                    \
+    v->destroyWith    = &vector_##name##_destroyWith;                \
+    v->destroyWithPtr = &vector_##name##_destroyWithPtr;             \
+    v->clear          = &vector_##name##_clear;                      \
 }                                                                    \
                                                                      \
 vector_initer(name)
