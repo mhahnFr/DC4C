@@ -130,6 +130,64 @@
      constexpr inline auto end() const noexcept -> type * {                                \
          return underlying.content + underlying.count;                                     \
      }                                                                                     \
+                                                                                           \
+     inline void push_back(const type& value) {                                            \
+         if (!vector_##name##_push_back(*this, value)) {                                   \
+             throw std::bad_alloc();                                                       \
+         }                                                                                 \
+     }                                                                                     \
+                                                                                           \
+     inline void push_back(type&& value) {                                                 \
+         if (!vector_##name##_push_back(*this, value)) {                                   \
+             throw std::bad_alloc();                                                       \
+         }                                                                                 \
+     }                                                                                     \
+                                                                                           \
+     inline auto pop_back() -> type {                                                      \
+         return vector_##name##_pop_back(*this);                                           \
+     }                                                                                     \
+                                                                                           \
+     inline auto erase(std::size_t index) -> type {                                        \
+         return vector_##name##_erase(*this, index);                                       \
+     }                                                                                     \
+                                                                                           \
+     inline void insert(const type& value, std::size_t index) {                            \
+         if (!vector_##name##_insert(*this, value, index)) {                               \
+             throw std::bad_alloc();                                                       \
+         }                                                                                 \
+     }                                                                                     \
+                                                                                           \
+     inline void insert(type&& value, std::size_t index) {                                 \
+         if (!vector_##name##_insert(*this, value, index)) {                               \
+             throw std::bad_alloc();                                                       \
+         }                                                                                 \
+     }                                                                                     \
+                                                                                           \
+     inline void reserve(std::size_t newCap) {                                             \
+         if (!vector_##name##_reserve(*this, newCap)) {                                    \
+             throw std::bad_alloc();                                                       \
+         }                                                                                 \
+     }                                                                                     \
+                                                                                           \
+     inline void clear() {                                                                 \
+         vector_##name##_clear(*this);                                                     \
+     }                                                                                     \
+                                                                                           \
+     constexpr inline auto size() const noexcept -> std::size_t {                          \
+         return underlying.count;                                                          \
+     }                                                                                     \
+                                                                                           \
+     constexpr inline auto capacity() const noexcept -> std::size_t {                      \
+         return underlying.cap;                                                            \
+     }                                                                                     \
+                                                                                           \
+     inline auto getUnderlyingData() noexcept -> type* {                                   \
+         return underlying.content;                                                        \
+     }                                                                                     \
+                                                                                           \
+     constexpr inline auto getUnderlyingData() const noexcept -> const type* {             \
+         return underlying.content;                                                        \
+     }                                                                                     \
  };                                                                                        \
  }                                                                                         \
  
