@@ -49,7 +49,7 @@
      inline vector_bridge_##name(vector_bridge_##name && other) {                          \
          vector_##name##_destroy(&underlying);                                             \
          underlying = other.underlying;                                                    \
-         other.underlying = {};                                                            \
+         vector_##name##_create(&other.underlying);                                        \
      }                                                                                     \
                                                                                            \
      inline vector_bridge_##name(const std::vector<type> & other) {                        \
@@ -82,7 +82,7 @@
      inline auto operator=(vector_bridge_##name && other) -> vector_bridge_##name & {      \
          vector_##name##_destroy(&underlying);                                             \
          underlying = other.underlying;                                                    \
-         other.underlying = {};                                                            \
+         vector_##name##_create(&other.underlying);                                        \
          return *this;                                                                     \
      }                                                                                     \
                                                                                            \

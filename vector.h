@@ -164,10 +164,10 @@ static inline void vector_##name##_clear(struct vector_##name * v) {            
                                                                                                     \
 static inline void vector_##name##_copy(      struct vector_##name * lhs,                           \
                                         const struct vector_##name * rhs) {                         \
-    *lhs     = *rhs;                                                                                \
-    lhs->cap = 0;                                                                                   \
+    *lhs = (struct vector_##name) vector_initializer;                                               \
     vector_##name##_reserve(lhs, rhs->cap);                                                         \
     memcpy(lhs->content, rhs->content, rhs->count);                                                 \
+    lhs->count = rhs->count;                                                                        \
 }
 
 #define vector_initer(name)                                     \
