@@ -131,13 +131,7 @@
          return underlying.content + underlying.count;                                     \
      }                                                                                     \
                                                                                            \
-     inline void push_back(const type& value) {                                            \
-         if (!vector_##name##_push_back(*this, value)) {                                   \
-             throw std::bad_alloc();                                                       \
-         }                                                                                 \
-     }                                                                                     \
-                                                                                           \
-     inline void push_back(type&& value) {                                                 \
+     inline void push_back(type value) {                                                   \
          if (!vector_##name##_push_back(*this, value)) {                                   \
              throw std::bad_alloc();                                                       \
          }                                                                                 \
@@ -151,13 +145,7 @@
          return vector_##name##_erase(*this, index);                                       \
      }                                                                                     \
                                                                                            \
-     inline void insert(const type& value, std::size_t index) {                            \
-         if (!vector_##name##_insert(*this, value, index)) {                               \
-             throw std::bad_alloc();                                                       \
-         }                                                                                 \
-     }                                                                                     \
-                                                                                           \
-     inline void insert(type&& value, std::size_t index) {                                 \
+     inline void insert(type value, std::size_t index) {                                   \
          if (!vector_##name##_insert(*this, value, index)) {                               \
              throw std::bad_alloc();                                                       \
          }                                                                                 \
