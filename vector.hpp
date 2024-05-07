@@ -173,7 +173,7 @@
          return underlying.content;                                                        \
      }                                                                                     \
                                                                                            \
-     constexpr inline auto getUnderlyingData() const noexcept -> type* const {             \
+     constexpr inline auto getUnderlyingData() const noexcept -> type* {                   \
          return underlying.content;                                                        \
      }                                                                                     \
  };                                                                                        \
