@@ -37,6 +37,7 @@
  #endif
 
  #include <algorithm>
+ #include <functional>
  #include <vector>
 
  #define vector_methods_cxx(type, name)                                                    \
@@ -184,12 +185,8 @@
          return underlying.content;                                                        \
      }                                                                                     \
                                                                                            \
-     __DC4C_CXX20_constexpr inline void sort() {                                           \
-         std::sort(begin(), end());                                                        \
-     }                                                                                     \
-                                                                                           \
-     template<typename C>                                                                  \
-     __DC4C_CXX20_constexpr inline void sort(const C& comp) {                              \
+     template<typename C = std::less<type>>                                                \
+     __DC4C_CXX20_constexpr inline void sort(const C& comp = C()) {                        \
          std::sort(begin(), end(), comp);                                                  \
      }                                                                                     \
  };                                                                                        \
