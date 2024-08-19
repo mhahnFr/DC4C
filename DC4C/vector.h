@@ -168,7 +168,7 @@ static inline void vector_##name##_copy(      struct vector_##name * lhs,       
                                         const struct vector_##name * rhs) {                         \
     *lhs = (struct vector_##name) vector_initializer;                                               \
     vector_##name##_reserve(lhs, rhs->cap);                                                         \
-    memcpy(lhs->content, rhs->content, rhs->count);                                                 \
+    memcpy(lhs->content, rhs->content, rhs->count * sizeof(type));                                  \
     lhs->count = rhs->count;                                                                        \
 }                                                                                                   \
                                                                                                     \
