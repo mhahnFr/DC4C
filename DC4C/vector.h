@@ -54,6 +54,8 @@
         size_t (*size)          (const struct vector_##name *);        \
         size_t (*capacity)      (const struct vector_##name *);        \
         type * (*data)          (const struct vector_##name *);        \
+        void   (*sort)          (struct vector_##name*,                \
+                                 int (*)(const type*, const type*));   \
     }
 
 #define vector_light_named(name, type) \
@@ -168,6 +170,13 @@ static inline void vector_##name##_copy(      struct vector_##name * lhs,       
     vector_##name##_reserve(lhs, rhs->cap);                                                         \
     memcpy(lhs->content, rhs->content, rhs->count);                                                 \
     lhs->count = rhs->count;                                                                        \
+}                                                                                                   \
+                                                                                                    \
+static inline void vector_##name##_sort(struct vector_##name* self,                                 \
+                                        int (*comp)(const type*, const type*)) {                    \
+    if (self->count > 0) {                                                                          \
+        qsort(self->content, self->count, sizeof(type), (int (*)(const void*, const void*)) comp);  \
+    }                                                                                               \
 }
 
 #define vector_initer(name)                                     \

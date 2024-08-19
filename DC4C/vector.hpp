@@ -30,6 +30,13 @@
  #ifndef __DC4C_vector_hpp
  #define __DC4C_vector_hpp
 
+ #if __cplusplus >= 202002
+  #define __DC4C_CXX20_constexpr constexpr
+ #else
+  #define __DC4C_CXX20_constexpr
+ #endif
+
+ #include <algorithm>
  #include <vector>
 
  #define vector_methods_cxx(type, name)                                                    \
@@ -175,6 +182,15 @@
                                                                                            \
      constexpr inline auto getUnderlyingData() const noexcept -> type* {                   \
          return underlying.content;                                                        \
+     }                                                                                     \
+                                                                                           \
+     __DC4C_CXX20_constexpr inline void sort() {                                           \
+         std::sort(begin(), end());                                                        \
+     }                                                                                     \
+                                                                                           \
+     template<typename C>                                                                  \
+     __DC4C_CXX20_constexpr inline void sort(const C& comp) {                              \
+         std::sort(begin(), end(), comp);                                                  \
      }                                                                                     \
  };                                                                                        \
  }                                                                                         \
