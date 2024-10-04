@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2023 - 2024  mhahnFr
  *
- * This file is part DC4C.
+ * This file is part of DC4C.
  *
  * DC4C is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
