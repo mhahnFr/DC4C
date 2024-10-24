@@ -21,8 +21,17 @@ An optional similar to the `std::optional` of the C++17 standard library is avai
 ### Pair
 A pair similar to the `std::pair` of the C++ standard library is available.
 
-### Final notes
-This repository is licensed under the terms of the GPL 3.0.
+## Standard compliance
+All containers are compatible with the C90 and C++98 standards, respectively, unless noted otherwise.
+
+### Vector
+The C implementation requires the C99 standard, the C++ implementation the C++11 standard.
+
+### Optional
+The interoperability with C++17's `std::optional` is only available when compiled with the C++17 (or newer) standard.
+
+## Final notes
+This repository is licensed under the terms of the GNU GPL in version 3 or later.
 
 © Copyright 2023 - 2024 [mhahnFr][1]
 
