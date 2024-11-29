@@ -56,6 +56,8 @@
         type * (*data)          (const struct vector_##name *);        \
         void   (*sort)          (struct vector_##name*,                \
                                  int (*)(type*, type*));               \
+        void   (*search)        (struct vector_##name*, type*,         \
+                                 int (*)(type*, type*));               \
     }
 
 #define vector_light_named(name, type) \
@@ -176,6 +178,16 @@ static inline void vector_##name##_sort(struct vector_##name* self, int (*comp)(
     if (self->count > 0) {                                                                          \
         qsort(self->content, self->count, sizeof(type), (int (*)(const void*, const void*)) comp);  \
     }                                                                                               \
+}                                                                                                   \
+                                                                                                    \
+static inline type* vector_##name##_search(struct vector_##name* self,                              \
+                                           type* key, int (*comp)(type*, type*)) {                  \
+    type* toReturn = NULL;                                                                          \
+    if (self->count > 0) {                                                                          \
+        toReturn = bsearch((const void*) key, (const void*) self->content, self->count,             \
+                           sizeof(type), (int (*)(const void*, const void*)) comp);                 \
+    }                                                                                               \
+    return toReturn;                                                                                \
 }
 
 #define vector_initer(name)                                     \
@@ -204,6 +216,7 @@ static inline void vector_##name##_create(struct vector_##name * v) {\
     v->destroyWithPtr = &vector_##name##_destroyWithPtr;             \
     v->clear          = &vector_##name##_clear;                      \
     v->sort           = &vector_##name##_sort;                       \
+    v->search         = &vector_##name##_search;                     \
 }                                                                    \
                                                                      \
 vector_initer(name)
