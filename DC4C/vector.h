@@ -203,6 +203,7 @@ static inline void vector_##name##_create(struct vector_##name * v) {\
     v->destroyWith    = &vector_##name##_destroyWith;                \
     v->destroyWithPtr = &vector_##name##_destroyWithPtr;             \
     v->clear          = &vector_##name##_clear;                      \
+    v->sort           = &vector_##name##_sort;                       \
 }                                                                    \
                                                                      \
 vector_initer(name)
