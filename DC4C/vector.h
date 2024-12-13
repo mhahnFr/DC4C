@@ -184,8 +184,8 @@ static inline type* vector_##name##_search(struct vector_##name* self,          
                                            type* key, int (*comp)(type*, type*)) {                  \
     type* toReturn = NULL;                                                                          \
     if (self->count > 0) {                                                                          \
-        toReturn = bsearch((const void*) key, (const void*) self->content, self->count,             \
-                           sizeof(type), (int (*)(const void*, const void*)) comp);                 \
+        toReturn = (type*) bsearch((const void*) key, (const void*) self->content, self->count,     \
+                                   sizeof(type), (int (*)(const void*, const void*)) comp);         \
     }                                                                                               \
     return toReturn;                                                                                \
 }
