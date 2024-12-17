@@ -55,7 +55,6 @@
      }                                                                                     \
                                                                                            \
      inline vector_bridge_##name(vector_bridge_##name && other) {                          \
-         vector_##name##_destroy(&underlying);                                             \
          underlying = other.underlying;                                                    \
          vector_##name##_create(&other.underlying);                                        \
      }                                                                                     \
@@ -68,6 +67,13 @@
              vector_##name##_push_back(&underlying, element);                              \
          }                                                                                 \
      }                                                                                     \
+                                                                                           \
+     inline vector_bridge_##name(const vector_##name& cVector) {                           \
+         vector_##name##_copy(&underlying, &cVector);                                      \
+     }                                                                                     \
+                                                                                           \
+     inline vector_bridge_##name(const vector_##name* cVector):                            \
+         vector_bridge_##name(*cVector) {}                                                 \
                                                                                            \
      template<typename InputIt>                                                            \
      inline vector_bridge_##name(InputIt begin, InputIt end) {                             \
@@ -92,6 +98,16 @@
          underlying = other.underlying;                                                    \
          vector_##name##_create(&other.underlying);                                        \
          return *this;                                                                     \
+     }                                                                                     \
+                                                                                           \
+     inline auto operator=(const vector_##name& cVector) -> vector_bridge_##name& {        \
+         vector_##name##_destroy(&underlying);                                             \
+         vector_##name##_copy(&underlying, &cVector);                                      \
+         return *this;                                                                     \
+     }                                                                                     \
+                                                                                           \
+     inline auto operator=(const vector_##name* cVector) -> vector_bridge_##name& {        \
+         return *this = *cVector;                                                          \
      }                                                                                     \
                                                                                            \
      inline auto data() -> vector_##name & {                                               \
