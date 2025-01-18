@@ -22,6 +22,9 @@
 #ifndef __DC4C_v2_vector_h
 #define __DC4C_v2_vector_h
 
+#include <stdbool.h> // TODO: Only when __STDC_VERSION__ < C17
+#include <stdlib.h>
+
 #define vector_named(name, type) \
 struct vector_##name {           \
     size_t count;                \
