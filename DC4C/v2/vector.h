@@ -54,4 +54,23 @@ do {                                                                            
     (vectorPtr)->result  = true;                                                  \
 } while (0)
 
+#define vector_push_back(vectorPtr, value)                                           \
+do {                                                                                 \
+    (vectorPtr)->result = false;                                                     \
+    if ((vectorPtr)->cap < (vectorPtr)->count + 1) {                                 \
+        vector_reserve(vectorPtr, (vectorPtr)->cap == 0 ? 1 : (vectorPtr)->cap * 2); \
+        if (!(vectorPtr)->result) break;                                             \
+    }                                                                                \
+                                                                                     \
+    (vectorPtr)->content[(vectorPtr)->count++] = value;                              \
+    (vectorPtr)->result = true;                                                      \
+} while (0)
+
+#define vector_pop_back(vectorPtr) (vectorPtr)->content[(vectorPtr)->count--]
+
+#define vector_clear(vectorPtr) \
+do {                            \
+    (vectorPtr)->count = 0;     \
+} while (0)
+
 #endif /* __DC4C_v2_vector_h */
