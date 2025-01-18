@@ -39,7 +39,7 @@ struct vector_##name {           \
 #define vector_reserve(vectorPtr, newSize)                                        \
 do {                                                                              \
     (vectorPtr)->result = false;                                                  \
-    if ((vectorPtr)->cap >= newSize) {                                            \
+    if ((vectorPtr)->cap >= (newSize)) {                                          \
         break;                                                                    \
     }                                                                             \
                                                                                   \
@@ -50,7 +50,7 @@ do {                                                                            
     }                                                                             \
                                                                                   \
     (vectorPtr)->content = tmp;                                                   \
-    (vectorPtr)->cap     = newSize;                                               \
+    (vectorPtr)->cap     = (newSize);                                             \
     (vectorPtr)->result  = true;                                                  \
 } while (0)
 
@@ -62,7 +62,7 @@ do {                                                                            
         if (!(vectorPtr)->result) break;                                             \
     }                                                                                \
                                                                                      \
-    (vectorPtr)->content[(vectorPtr)->count++] = value;                              \
+    (vectorPtr)->content[(vectorPtr)->count++] = (value);                            \
     (vectorPtr)->result = true;                                                      \
 } while (0)
 
