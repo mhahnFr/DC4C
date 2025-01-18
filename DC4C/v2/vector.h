@@ -73,4 +73,31 @@ do {                            \
     (vectorPtr)->count = 0;     \
 } while (0)
 
+#define vector_insert(vectorPtr, value, position)                               \
+do {                                                                            \
+    (vectorPtr)->result = false;                                                \
+    if ((position) >= (vectorPtr)->count) {                                     \
+        vector_push_back(vectorPtr, value);                                     \
+        break;                                                                  \
+    }                                                                           \
+                                                                                \
+    if ((vectorPtr)->cap < (vectorPtr)->count + 1) {                            \
+        vector_reserve(vectorPtr, (vectorPtr)->cap * 2);                        \
+        if (!(vectorPtr)->result) break;                                        \
+    }                                                                           \
+    memmove(&(vectorPtr)->content[(position) + 1],                              \
+            &(vectorPtr)->content[(position)],                                  \
+            ((vectorPtr)->count - (position)) * sizeof(*(vectorPtr)->content)); \
+    (vectorPtr)->content[(position)] = (value);                                 \
+    ++(vectorPtr)->count;                                                       \
+    (vectorPtr)->result = true;                                                 \
+} while (0)
+
+#define vector_erase(vectorPtr, position)                                       \
+do {                                                                            \
+    memmove(&(vectorPtr)->content[(position)],                                  \
+            &(vectorPtr)->content[(position) + 1],                              \
+            (--(vectorPtr)->count - position) * sizeof(*(vectorPtr)->content)); \
+} while (0)
+
 #endif /* __DC4C_v2_vector_h */
