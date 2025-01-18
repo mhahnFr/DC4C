@@ -108,4 +108,21 @@ for (size_t __dc4c_i = 0; __dc4c_i < (vectorPtr)->count; ++__dc4c_i) {      \
 
 #define vector_iterate(vectorPtr, block) vector_forEach(vectorPtr, element, block)
 
+#define vector_destroy(vectorPtr) \
+do {                              \
+    free((vectorPtr)->content);   \
+} while (0)
+
+#define vector_destroyWith(vectorPtr, valueFunc)    \
+do {                                                \
+    vector_iterate(vectorPtr, valueFunc(*element);) \
+    vector_destroy(vectorPtr);                      \
+} while (0)
+
+#define vector_destroyWithPtr(vectorPtr, ptrFunc) \
+do {                                              \
+    vector_iterate(vectorPtr, ptrFunc(element);)  \
+    vector_destroy(vectorPtr);                    \
+} while (0)
+
 #endif /* __DC4C_v2_vector_h */
