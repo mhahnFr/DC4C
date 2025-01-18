@@ -125,4 +125,22 @@ do {                                              \
     vector_destroy(vectorPtr);                    \
 } while (0)
 
+#define vector_init(vectorPtr)   \
+do {                             \
+    (vectorPtr)->cap     = 0;    \
+    (vectorPtr)->count   = 0;    \
+    (vectorPtr)->content = NULL; \
+    (vectorPtr)->result  = true; \
+} while (0)
+
+#define vector_initializer { 0, 0, NULL, true }
+
+#define vector_copy(lhsPtr, rhsPtr)                                \
+do {                                                               \
+    vector_init(lhsPtr);                                           \
+    vector_reserve(lhsPtr, (rhsPtr)->cap);                         \
+    memcpy((lhsPtr)->content, (rhsPtr)->content, (rhsPtr)->count); \
+    (lhsPtr)->count = (rhsPtr)->count;                             \
+} while (0)
+
 #endif /* __DC4C_v2_vector_h */
