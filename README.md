@@ -33,6 +33,6 @@ The interoperability with C++17's `std::optional` is only available when compile
 ## Final notes
 This repository is licensed under the terms of the GNU GPL in version 3 or later.
 
-© Copyright 2023 - 2024 [mhahnFr][1]
+© Copyright 2023 - 2025 [mhahnFr][1]
 
 [1]: https://github.com/mhahnFr

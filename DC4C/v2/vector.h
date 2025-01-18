@@ -24,6 +24,7 @@
 
 #include <stdbool.h> // TODO: Only when __STDC_VERSION__ < C17
 #include <stdlib.h>
+#include <string.h>
 
 #define vector_named(name, type) \
 struct vector_##name {           \
@@ -142,5 +143,11 @@ do {                                                               \
     memcpy((lhsPtr)->content, (rhsPtr)->content, (rhsPtr)->count); \
     (lhsPtr)->count = (rhsPtr)->count;                             \
 } while (0)
+
+#define typedef_vector_named(name, type)       \
+vector_named(name, type);                      \
+typedef struct vector_##name vector_##name##_t
+
+#define typedef_vector(type) typedef_vector_named(type, type)
 
 #endif /* __DC4C_v2_vector_h */
