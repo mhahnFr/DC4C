@@ -100,4 +100,12 @@ do {                                                                            
             (--(vectorPtr)->count - position) * sizeof(*(vectorPtr)->content)); \
 } while (0)
 
+#define vector_forEach(vectorPtr, varname, block)                           \
+for (size_t __dc4c_i = 0; __dc4c_i < (vectorPtr)->count; ++__dc4c_i) {      \
+    typeof((vectorPtr)->content) varname = &(vectorPtr)->content[__dc4c_i]; \
+    { block }                                                               \
+}
+
+#define vector_iterate(vectorPtr, block) vector_forEach(vectorPtr, element, block)
+
 #endif /* __DC4C_v2_vector_h */
