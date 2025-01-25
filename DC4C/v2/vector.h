@@ -22,7 +22,10 @@
 #ifndef __DC4C_v2_vector_h
 #define __DC4C_v2_vector_h
 
-#include <stdbool.h> // TODO: Only when __STDC_VERSION__ < C17
+#if __STDC_VERSION__ < 202311L
+# include <stdbool.h>
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 
