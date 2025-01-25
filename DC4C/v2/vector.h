@@ -116,6 +116,12 @@ for (size_t __dc4c_i = 0; __dc4c_i < (vectorPtr)->count; ++__dc4c_i) {      \
     { block }                                                               \
 }
 
+#define vector_size(vectorPtr) ({ (vectorPtr)->count; })
+
+#define vector_capacity(vectorPtr) ({ (vectorPtr)->cap; })
+
+#define vector_data(vectorPtr) ({ (vectorPtr)->content; })
+
 #define vector_iterate(vectorPtr, block) vector_forEach(vectorPtr, element, block)
 
 #define vector_destroy(vectorPtr) \
