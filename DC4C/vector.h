@@ -100,7 +100,9 @@ static inline bool vector_##name##_push_back(struct vector_##name * v, type valu
 }                                                                                                   \
                                                                                                     \
 static inline type vector_##name##_pop_back(struct vector_##name * v) {                             \
-    return v->content[v->count--];                                                                  \
+    type toReturn = v->content[v->count - 1];                                                       \
+    --v->count;                                                                                     \
+    return toReturn;                                                                                \
 }                                                                                                   \
                                                                                                     \
 static inline bool vector_##name##_insert(struct vector_##name * v, type value, size_t position) {  \
