@@ -37,69 +37,80 @@ struct vector_##name {           \
 
 #define dc4c_vector(type) vector_named(type, type)
 
-#define vector_reserve(vectorPtr, newSize)                                        \
-do {                                                                              \
-    (vectorPtr)->result = false;                                                  \
-    if ((vectorPtr)->cap >= (newSize)) {                                          \
-        break;                                                                    \
-    }                                                                             \
-                                                                                  \
-    typeof((vectorPtr)->content) tmp = (typeof((vectorPtr)->content))             \
-        realloc((vectorPtr)->content, sizeof(*(vectorPtr)->content) * (newSize)); \
-    if (tmp == NULL) {                                                            \
-        break;                                                                    \
-    }                                                                             \
-                                                                                  \
-    (vectorPtr)->content = tmp;                                                   \
-    (vectorPtr)->cap     = (newSize);                                             \
-    (vectorPtr)->result  = true;                                                  \
-} while (0)
+#define vector_reserve(vectorPtr, newSize) ({                                         \
+    bool result = false;                                                              \
+    do {                                                                              \
+        if ((vectorPtr)->cap >= (newSize)) {                                          \
+            break;                                                                    \
+        }                                                                             \
+                                                                                      \
+        typeof((vectorPtr)->content) tmp = (typeof((vectorPtr)->content))             \
+            realloc((vectorPtr)->content, sizeof(*(vectorPtr)->content) * (newSize)); \
+        if (tmp == NULL) {                                                            \
+            break;                                                                    \
+        }                                                                             \
+                                                                                      \
+        (vectorPtr)->content = tmp;                                                   \
+        (vectorPtr)->cap     = (newSize);                                             \
+        result = true;                                                                \
+    } while (0);                                                                      \
+    result;                                                                           \
+})
 
-#define vector_push_back(vectorPtr, value)                                           \
-do {                                                                                 \
-    (vectorPtr)->result = false;                                                     \
-    if ((vectorPtr)->cap < (vectorPtr)->count + 1) {                                 \
-        vector_reserve(vectorPtr, (vectorPtr)->cap == 0 ? 1 : (vectorPtr)->cap * 2); \
-        if (!(vectorPtr)->result) break;                                             \
-    }                                                                                \
-                                                                                     \
-    (vectorPtr)->content[(vectorPtr)->count++] = (value);                            \
-    (vectorPtr)->result = true;                                                      \
-} while (0)
+#define vector_push_back(vectorPtr, value) ({                                                   \
+    bool result = false;                                                                        \
+    do {                                                                                        \
+        if ((vectorPtr)->cap < (vectorPtr)->count + 1) {                                        \
+            if (!vector_reserve(vectorPtr, (vectorPtr)->cap == 0 ? 1 : (vectorPtr)->cap * 2)) { \
+                break;                                                                          \
+            }                                                                                   \
+        }                                                                                       \
+                                                                                                \
+        (vectorPtr)->content[(vectorPtr)->count++] = (value);                                   \
+        result = true;                                                                          \
+    } while (0);                                                                                \
+    result;                                                                                     \
+})
 
-#define vector_pop_back(vectorPtr) (vectorPtr)->content[(vectorPtr)->count--]
+#define vector_pop_back(vectorPtr) ({ (vectorPtr)->content[(vectorPtr)->count--]; })
 
 #define vector_clear(vectorPtr) \
 do {                            \
     (vectorPtr)->count = 0;     \
 } while (0)
 
-#define vector_insert(vectorPtr, value, position)                               \
-do {                                                                            \
-    (vectorPtr)->result = false;                                                \
-    if ((position) >= (vectorPtr)->count) {                                     \
-        vector_push_back(vectorPtr, value);                                     \
-        break;                                                                  \
-    }                                                                           \
-                                                                                \
-    if ((vectorPtr)->cap < (vectorPtr)->count + 1) {                            \
-        vector_reserve(vectorPtr, (vectorPtr)->cap * 2);                        \
-        if (!(vectorPtr)->result) break;                                        \
-    }                                                                           \
-    memmove(&(vectorPtr)->content[(position) + 1],                              \
-            &(vectorPtr)->content[(position)],                                  \
-            ((vectorPtr)->count - (position)) * sizeof(*(vectorPtr)->content)); \
-    (vectorPtr)->content[(position)] = (value);                                 \
-    ++(vectorPtr)->count;                                                       \
-    (vectorPtr)->result = true;                                                 \
-} while (0)
+#define vector_insert(vectorPtr, value, position) ({                                \
+    bool result = false;                                                            \
+    do {                                                                            \
+        if ((position) >= (vectorPtr)->count) {                                     \
+            result = vector_push_back(vectorPtr, value);                            \
+            break;                                                                  \
+        }                                                                           \
+                                                                                    \
+        if ((vectorPtr)->cap < (vectorPtr)->count + 1) {                            \
+            if (!vector_reserve(vectorPtr, (vectorPtr)->cap * 2)) {                 \
+                break;                                                              \
+            }                                                                       \
+        }                                                                           \
+        memmove(&(vectorPtr)->content[(position) + 1],                              \
+                &(vectorPtr)->content[(position)],                                  \
+                ((vectorPtr)->count - (position)) * sizeof(*(vectorPtr)->content)); \
+        (vectorPtr)->content[(position)] = (value);                                 \
+        ++(vectorPtr)->count;                                                       \
+        result = true;                                                              \
+    } while (0);                                                                    \
+    result;                                                                         \
+})
 
-#define vector_erase(vectorPtr, position)                                       \
-do {                                                                            \
-    memmove(&(vectorPtr)->content[(position)],                                  \
-            &(vectorPtr)->content[(position) + 1],                              \
-            (--(vectorPtr)->count - position) * sizeof(*(vectorPtr)->content)); \
-} while (0)
+#define vector_erase(vectorPtr, position) ({                                        \
+    typeof(*(vectorPtr)->content) toReturn = (vectorPtr)->content[position];        \
+    do {                                                                            \
+        memmove(&(vectorPtr)->content[(position)],                                  \
+                &(vectorPtr)->content[(position) + 1],                              \
+                (--(vectorPtr)->count - position) * sizeof(*(vectorPtr)->content)); \
+    } while (0);                                                                    \
+    toReturn;                                                                       \
+})
 
 #define vector_forEach(vectorPtr, varname, block)                           \
 for (size_t __dc4c_i = 0; __dc4c_i < (vectorPtr)->count; ++__dc4c_i) {      \
