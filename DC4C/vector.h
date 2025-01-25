@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Copyright (C) 2023 - 2024  mhahnFr
+ * Copyright (C) 2023 - 2025  mhahnFr
  *
  * This file is part of DC4C.
  *
@@ -56,7 +56,7 @@
         type * (*data)          (const struct vector_##name *);        \
         void   (*sort)          (struct vector_##name*,                \
                                  int (*)(type*, type*));               \
-        void   (*search)        (struct vector_##name*, type*,         \
+        type*  (*search)        (struct vector_##name*, type*,         \
                                  int (*)(type*, type*));               \
     }
 
