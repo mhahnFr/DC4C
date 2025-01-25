@@ -124,6 +124,17 @@ for (size_t __dc4c_i = 0; __dc4c_i < (vectorPtr)->count; ++__dc4c_i) {      \
 
 #define vector_iterate(vectorPtr, block) vector_forEach(vectorPtr, element, block)
 
+#define vector_sort(vectorPtr, comp)                       \
+do {                                                       \
+    if ((vectorPtr)->count > 0) {                          \
+        qsort((vectorPtr)->content,                        \
+              (vectorPtr)->count,                          \
+              (int (*)(const void*, const void*)) (comp)); \
+    }                                                      \
+} while (0)
+
+// TODO: Search
+
 #define vector_destroy(vectorPtr) \
 do {                              \
     free((vectorPtr)->content);   \
