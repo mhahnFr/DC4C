@@ -22,6 +22,8 @@
 #ifndef __DC4C_v2_vector_h
 #define __DC4C_v2_vector_h
 
+// TODO: More version and compiler checks
+
 #if __STDC_VERSION__ < 202311L
 # include <stdbool.h>
 #endif
