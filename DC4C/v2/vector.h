@@ -31,8 +31,6 @@ struct vector_##name {           \
     size_t count;                \
     size_t cap;                  \
     type*  content;              \
-                                 \
-    bool result;                 \
 }
 
 #define dc4c_vector(type) vector_named(type, type)
@@ -142,10 +140,9 @@ do {                             \
     (vectorPtr)->cap     = 0;    \
     (vectorPtr)->count   = 0;    \
     (vectorPtr)->content = NULL; \
-    (vectorPtr)->result  = true; \
 } while (0)
 
-#define vector_initializer { 0, 0, NULL, true }
+#define vector_initializer { 0, 0, NULL }
 
 #define vector_copy(lhsPtr, rhsPtr)                                \
 do {                                                               \
