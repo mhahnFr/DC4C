@@ -73,7 +73,11 @@ struct vector_##name {           \
     result;                                                                                     \
 })
 
-#define vector_pop_back(vectorPtr) ({ (vectorPtr)->content[(vectorPtr)->count--]; })
+#define vector_pop_back(vectorPtr) ({                                                      \
+    typeof(*(vectorPtr)->content) toReturn = (vectorPtr)->content[(vectorPtr)->count - 1]; \
+    --(vectorPtr)->count;                                                                  \
+    toReturn;                                                                              \
+})
 
 #define vector_clear(vectorPtr) \
 do {                            \
