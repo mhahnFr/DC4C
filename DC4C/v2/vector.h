@@ -133,7 +133,19 @@ do {                                                       \
     }                                                      \
 } while (0)
 
-// TODO: Search
+#define vector_search(vectorPtr, keyPtr, comp) ({                 \
+    typeof((vectorPtr)->content) toReturn = NULL;                 \
+    if ((vectorPtr)->count > 0) {                                 \
+        toReturn = (typeof((vectorPtr)->content)) bsearch(        \
+                       (const void*) (keyPtr),                    \
+                       (const void*) (vectorPtr)->content,        \
+                       (vectorPtr)->count,                        \
+                       sizeof(*(vectorPtr)->content),             \
+                       (int (*)(const void*, const void*)) (comp) \
+                   );                                             \
+    }                                                             \
+    toReturn;                                                     \
+})
 
 #define vector_destroy(vectorPtr) \
 do {                              \
