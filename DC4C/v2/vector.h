@@ -40,34 +40,40 @@ struct vector_##name {           \
 
 #define dc4c_vector(type) vector_named(type, type)
 
-#define vector_reserve(vectorPtr, newSize) ({                            \
-    bool result = false;                                                 \
-    do {                                                                 \
-        typeof((vectorPtr)) __v_vr = (vectorPtr);                        \
-        typeof((newSize))   __s_vr = (newSize);                          \
-                                                                         \
-        if (__v_vr->cap >= __s_vr) {                                     \
-            break;                                                       \
-        }                                                                \
-                                                                         \
-        typeof(__v_vr->content) tmp = (typeof(__v_vr->content))          \
-            realloc(__v_vr->content, sizeof(*__v_vr->content) * __s_vr); \
-        if (tmp == NULL) {                                               \
-            break;                                                       \
-        }                                                                \
-                                                                         \
-        __v_vr->content = tmp;                                           \
-        __v_vr->cap     = __s_vr;                                        \
-        result = true;                                                   \
-    } while (0);                                                         \
-    result;                                                              \
+#ifdef __cplusplus
+# define __DC4C_TYPEOF(expr) decltype(expr)
+#else
+# define __DC4C_TYPEOF(expr) typeof(expr)
+#endif
+
+#define vector_reserve(vectorPtr, newSize) ({                                 \
+    bool result = false;                                                      \
+    do {                                                                      \
+        __DC4C_TYPEOF((vectorPtr)) __v_vr = (vectorPtr);                      \
+        __DC4C_TYPEOF((newSize))   __s_vr = (newSize);                        \
+                                                                              \
+        if (__v_vr->cap >= __s_vr) {                                          \
+            break;                                                            \
+        }                                                                     \
+                                                                              \
+        __DC4C_TYPEOF(__v_vr->content) tmp = (__DC4C_TYPEOF(__v_vr->content)) \
+            realloc(__v_vr->content, sizeof(*__v_vr->content) * __s_vr);      \
+        if (tmp == NULL) {                                                    \
+            break;                                                            \
+        }                                                                     \
+                                                                              \
+        __v_vr->content = tmp;                                                \
+        __v_vr->cap     = __s_vr;                                             \
+        result = true;                                                        \
+    } while (0);                                                              \
+    result;                                                                   \
 })
 
 #define vector_push_back(vectorPtr, value) ({                                         \
     bool result = false;                                                              \
     do {                                                                              \
-        typeof((vectorPtr)) __v_vpb  = (vectorPtr);                                   \
-        typeof((value))     __vl_vpb = (value);                                       \
+        __DC4C_TYPEOF((vectorPtr)) __v_vpb  = (vectorPtr);                            \
+        __DC4C_TYPEOF((value))     __vl_vpb = (value);                                \
                                                                                       \
         if (__v_vpb->cap < __v_vpb->count + 1) {                                      \
             if (!vector_reserve(__v_vpb, __v_vpb->cap == 0 ? 1 : __v_vpb->cap * 2)) { \
@@ -81,11 +87,11 @@ struct vector_##name {           \
     result;                                                                           \
 })
 
-#define vector_pop_back(vectorPtr) ({                                                \
-    typeof((vectorPtr)) __v_vpopb = (vectorPtr);                                     \
-    typeof(*__v_vpopb->content) toReturn = __v_vpopb->content[__v_vpopb->count - 1]; \
-    --__v_vpopb->count;                                                              \
-    toReturn;                                                                        \
+#define vector_pop_back(vectorPtr) ({                                                       \
+    __DC4C_TYPEOF((vectorPtr)) __v_vpopb = (vectorPtr);                                     \
+    __DC4C_TYPEOF(*__v_vpopb->content) toReturn = __v_vpopb->content[__v_vpopb->count - 1]; \
+    --__v_vpopb->count;                                                                     \
+    toReturn;                                                                               \
 })
 
 #define vector_clear(vectorPtr) \
@@ -96,9 +102,9 @@ do {                            \
 #define vector_insert(vectorPtr, value, position) ({                  \
     bool result = false;                                              \
     do {                                                              \
-        typeof((vectorPtr)) __v_vi  = (vectorPtr);                    \
-        typeof((value))     __vl_vi = (value);                        \
-        typeof((position))  __p_vi  = (position);                     \
+        __DC4C_TYPEOF((vectorPtr)) __v_vi  = (vectorPtr);             \
+        __DC4C_TYPEOF((value))     __vl_vi = (value);                 \
+        __DC4C_TYPEOF((position))  __p_vi  = (position);              \
                                                                       \
         if (__p_vi >= __v_vi->count) {                                \
             result = vector_push_back(__v_vi, __vl_vi);               \
@@ -121,10 +127,10 @@ do {                            \
 })
 
 #define vector_erase(vectorPtr, position) ({                            \
-    typeof((vectorPtr)) __v_ve = (vectorPtr);                           \
-    typeof((position)) __p_ve = (position);                             \
+    __DC4C_TYPEOF((vectorPtr)) __v_ve = (vectorPtr);                    \
+    __DC4C_TYPEOF((position)) __p_ve = (position);                      \
                                                                         \
-    typeof(*__v_ve->content) toReturn = __v_ve->content[__p_ve];        \
+    __DC4C_TYPEOF(*__v_ve->content) toReturn = __v_ve->content[__p_ve]; \
     do {                                                                \
         memmove(&__v_ve->content[__p_ve],                               \
                 &__v_ve->content[__p_ve + 1],                           \
@@ -133,13 +139,13 @@ do {                            \
     toReturn;                                                           \
 })
 
-#define vector_forEach(vectorPtr, varname, block)                       \
-do {                                                                    \
-    typeof((vectorPtr)) __v_vfe = (vectorPtr);                          \
-    for (size_t __dc4c_i = 0; __dc4c_i < __v_vfe->count; ++__dc4c_i) {  \
-        typeof(__v_vfe->content) varname = &__v_vfe->content[__dc4c_i]; \
-        { block }                                                       \
-    }                                                                   \
+#define vector_forEach(vectorPtr, varname, block)                              \
+do {                                                                           \
+    __DC4C_TYPEOF((vectorPtr)) __v_vfe = (vectorPtr);                          \
+    for (size_t __dc4c_i = 0; __dc4c_i < __v_vfe->count; ++__dc4c_i) {         \
+        __DC4C_TYPEOF(__v_vfe->content) varname = &__v_vfe->content[__dc4c_i]; \
+        { block }                                                              \
+    }                                                                          \
 } while (0)
 
 #define vector_size(vectorPtr) ({ (vectorPtr)->count; })
@@ -152,7 +158,7 @@ do {                                                                    \
 
 #define vector_sort(vectorPtr, comp)                       \
 do {                                                       \
-    typeof((vectorPtr)) __v_vs = (vectorPtr);              \
+    __DC4C_TYPEOF((vectorPtr)) __v_vs = (vectorPtr);       \
     if (__v_vs->count > 0) {                               \
         qsort(__v_vs->content,                             \
               __v_vs->count,                               \
@@ -161,11 +167,11 @@ do {                                                       \
 } while (0)
 
 #define vector_search(vectorPtr, keyPtr, comp) ({                 \
-    typeof((vectorPtr)) __v_vse = (vectorPtr);                    \
+    __DC4C_TYPEOF((vectorPtr)) __v_vse = (vectorPtr);             \
                                                                   \
-    typeof(__v_vse->content) toReturn = NULL;                     \
+    __DC4C_TYPEOF(__v_vse->content) toReturn = NULL;              \
     if (__v_vse->count > 0) {                                     \
-        toReturn = (typeof(__v_vse->content)) bsearch(            \
+        toReturn = (__DC4C_TYPEOF(__v_vse->content)) bsearch(     \
                        (const void*) (keyPtr),                    \
                        (const void*) __v_vse->content,            \
                        __v_vse->count,                            \
@@ -181,37 +187,37 @@ do {                              \
     free((vectorPtr)->content);   \
 } while (0)
 
-#define vector_destroyWith(vectorPtr, valueFunc)  \
-do {                                              \
-    typeof((vectorPtr)) __v_vdw = (vectorPtr);    \
-                                                  \
-    vector_iterate(__v_vdw, valueFunc(*element);) \
-    vector_destroy(__v_vdw);                      \
+#define vector_destroyWith(vectorPtr, valueFunc)      \
+do {                                                  \
+    __DC4C_TYPEOF((vectorPtr)) __v_vdw = (vectorPtr); \
+                                                      \
+    vector_iterate(__v_vdw, valueFunc(*element);)     \
+    vector_destroy(__v_vdw);                          \
 } while (0)
 
-#define vector_destroyWithPtr(vectorPtr, ptrFunc) \
-do {                                              \
-    typeof((vectorPtr)) __v_vdwp = (vectorPtr);   \
-                                                  \
-    vector_iterate(__v_vdwp, ptrFunc(element);)   \
-    vector_destroy(__v_vdwp);                     \
+#define vector_destroyWithPtr(vectorPtr, ptrFunc)      \
+do {                                                   \
+    __DC4C_TYPEOF((vectorPtr)) __v_vdwp = (vectorPtr); \
+                                                       \
+    vector_iterate(__v_vdwp, ptrFunc(element);)        \
+    vector_destroy(__v_vdwp);                          \
 } while (0)
 
-#define vector_init(vectorPtr)                 \
-do {                                           \
-    typeof((vectorPtr)) __v_vin = (vectorPtr); \
-                                               \
-    __v_vin->cap     = 0;                      \
-    __v_vin->count   = 0;                      \
-    __v_vin->content = NULL;                   \
+#define vector_init(vectorPtr)                        \
+do {                                                  \
+    __DC4C_TYPEOF((vectorPtr)) __v_vin = (vectorPtr); \
+                                                      \
+    __v_vin->cap     = 0;                             \
+    __v_vin->count   = 0;                             \
+    __v_vin->content = NULL;                          \
 } while (0)
 
 #define vector_initializer { 0, 0, NULL }
 
 #define vector_copy(lhsPtr, rhsPtr)                                \
 do {                                                               \
-    typeof((lhsPtr)) __v_l_vc = (lhsPtr);                          \
-    typeof((rhsPtr)) __v_r_vc = (rhsPtr);                          \
+    __DC4C_TYPEOF((lhsPtr)) __v_l_vc = (lhsPtr);                   \
+    __DC4C_TYPEOF((rhsPtr)) __v_r_vc = (rhsPtr);                   \
                                                                    \
     vector_init(__v_l_vc);                                         \
     vector_reserve(__v_l_vc, __v_r_vc->cap);                       \
