@@ -40,46 +40,52 @@ struct vector_##name {           \
 
 #define dc4c_vector(type) vector_named(type, type)
 
-#define vector_reserve(vectorPtr, newSize) ({                                                       \
-    bool result = false;                                                                            \
-    do {                                                                                            \
-        typeof((vectorPtr)) v = (vectorPtr);                                                        \
-        typeof((newSize))   s = (newSize);                                                          \
-        if (v->cap >= s) {                                                                          \
-            break;                                                                                  \
-        }                                                                                           \
-                                                                                                    \
-        typeof(v->content) tmp = (typeof(v->content)) realloc(v->content, sizeof(*v->content) * s); \
-        if (tmp == NULL) {                                                                          \
-            break;                                                                                  \
-        }                                                                                           \
-                                                                                                    \
-        v->content = tmp;                                                                           \
-        v->cap     = s;                                                                             \
-        result = true;                                                                              \
-    } while (0);                                                                                    \
-    result;                                                                                         \
+#define vector_reserve(vectorPtr, newSize) ({                            \
+    bool result = false;                                                 \
+    do {                                                                 \
+        typeof((vectorPtr)) __v_vr = (vectorPtr);                        \
+        typeof((newSize))   __s_vr = (newSize);                          \
+                                                                         \
+        if (__v_vr->cap >= __s_vr) {                                     \
+            break;                                                       \
+        }                                                                \
+                                                                         \
+        typeof(__v_vr->content) tmp = (typeof(__v_vr->content))          \
+            realloc(__v_vr->content, sizeof(*__v_vr->content) * __s_vr); \
+        if (tmp == NULL) {                                               \
+            break;                                                       \
+        }                                                                \
+                                                                         \
+        __v_vr->content = tmp;                                           \
+        __v_vr->cap     = __s_vr;                                        \
+        result = true;                                                   \
+    } while (0);                                                         \
+    result;                                                              \
 })
 
-#define vector_push_back(vectorPtr, value) ({                                                   \
-    bool result = false;                                                                        \
-    do {                                                                                        \
-        if ((vectorPtr)->cap < (vectorPtr)->count + 1) {                                        \
-            if (!vector_reserve(vectorPtr, (vectorPtr)->cap == 0 ? 1 : (vectorPtr)->cap * 2)) { \
-                break;                                                                          \
-            }                                                                                   \
-        }                                                                                       \
-                                                                                                \
-        (vectorPtr)->content[(vectorPtr)->count++] = (value);                                   \
-        result = true;                                                                          \
-    } while (0);                                                                                \
-    result;                                                                                     \
+#define vector_push_back(vectorPtr, value) ({                                         \
+    bool result = false;                                                              \
+    do {                                                                              \
+        typeof((vectorPtr)) __v_vpb  = (vectorPtr);                                   \
+        typeof((value))     __vl_vpb = (value);                                       \
+                                                                                      \
+        if (__v_vpb->cap < __v_vpb->count + 1) {                                      \
+            if (!vector_reserve(__v_vpb, __v_vpb->cap == 0 ? 1 : __v_vpb->cap * 2)) { \
+                break;                                                                \
+            }                                                                         \
+        }                                                                             \
+                                                                                      \
+        __v_vpb->content[__v_vpb->count++] = __vl_vpb;                                \
+        result = true;                                                                \
+    } while (0);                                                                      \
+    result;                                                                           \
 })
 
-#define vector_pop_back(vectorPtr) ({                                                      \
-    typeof(*(vectorPtr)->content) toReturn = (vectorPtr)->content[(vectorPtr)->count - 1]; \
-    --(vectorPtr)->count;                                                                  \
-    toReturn;                                                                              \
+#define vector_pop_back(vectorPtr) ({                                                \
+    typeof((vectorPtr)) __v_vpopb = (vectorPtr);                                     \
+    typeof(*__v_vpopb->content) toReturn = __v_vpopb->content[__v_vpopb->count - 1]; \
+    --__v_vpopb->count;                                                              \
+    toReturn;                                                                        \
 })
 
 #define vector_clear(vectorPtr) \
@@ -87,44 +93,54 @@ do {                            \
     (vectorPtr)->count = 0;     \
 } while (0)
 
-#define vector_insert(vectorPtr, value, position) ({                                \
-    bool result = false;                                                            \
-    do {                                                                            \
-        if ((position) >= (vectorPtr)->count) {                                     \
-            result = vector_push_back(vectorPtr, value);                            \
-            break;                                                                  \
-        }                                                                           \
-                                                                                    \
-        if ((vectorPtr)->cap < (vectorPtr)->count + 1) {                            \
-            if (!vector_reserve(vectorPtr, (vectorPtr)->cap * 2)) {                 \
-                break;                                                              \
-            }                                                                       \
-        }                                                                           \
-        memmove(&(vectorPtr)->content[(position) + 1],                              \
-                &(vectorPtr)->content[(position)],                                  \
-                ((vectorPtr)->count - (position)) * sizeof(*(vectorPtr)->content)); \
-        (vectorPtr)->content[(position)] = (value);                                 \
-        ++(vectorPtr)->count;                                                       \
-        result = true;                                                              \
-    } while (0);                                                                    \
-    result;                                                                         \
+#define vector_insert(vectorPtr, value, position) ({                  \
+    bool result = false;                                              \
+    do {                                                              \
+        typeof((vectorPtr)) __v_vi  = (vectorPtr);                    \
+        typeof((value))     __vl_vi = (value);                        \
+        typeof((position))  __p_vi  = (position);                     \
+                                                                      \
+        if (__p_vi >= __v_vi->count) {                                \
+            result = vector_push_back(__v_vi, __vl_vi);               \
+            break;                                                    \
+        }                                                             \
+                                                                      \
+        if (__v_vi->cap < __v_vi->count + 1) {                        \
+            if (!vector_reserve(__v_vi, __v_vi->cap * 2)) {           \
+                break;                                                \
+            }                                                         \
+        }                                                             \
+        memmove(&__v_vi->content[__p_vi + 1],                         \
+                &__v_vi->content[__p_vi],                             \
+                (__v_vi->count - __p_vi) * sizeof(*__v_vi->content)); \
+        __v_vi->content[__p_vi] = __vl_vi;                            \
+        ++__v_vi->count;                                              \
+        result = true;                                                \
+    } while (0);                                                      \
+    result;                                                           \
 })
 
-#define vector_erase(vectorPtr, position) ({                                        \
-    typeof(*(vectorPtr)->content) toReturn = (vectorPtr)->content[position];        \
-    do {                                                                            \
-        memmove(&(vectorPtr)->content[(position)],                                  \
-                &(vectorPtr)->content[(position) + 1],                              \
-                (--(vectorPtr)->count - position) * sizeof(*(vectorPtr)->content)); \
-    } while (0);                                                                    \
-    toReturn;                                                                       \
+#define vector_erase(vectorPtr, position) ({                            \
+    typeof((vectorPtr)) __v_ve = (vectorPtr);                           \
+    typeof((position)) __p_ve = (position);                             \
+                                                                        \
+    typeof(*__v_ve->content) toReturn = __v_ve->content[__p_ve];        \
+    do {                                                                \
+        memmove(&__v_ve->content[__p_ve],                               \
+                &__v_ve->content[__p_ve + 1],                           \
+                (--__v_ve->count - __p_ve) * sizeof(*__v_ve->content)); \
+    } while (0);                                                        \
+    toReturn;                                                           \
 })
 
-#define vector_forEach(vectorPtr, varname, block)                           \
-for (size_t __dc4c_i = 0; __dc4c_i < (vectorPtr)->count; ++__dc4c_i) {      \
-    typeof((vectorPtr)->content) varname = &(vectorPtr)->content[__dc4c_i]; \
-    { block }                                                               \
-}
+#define vector_forEach(vectorPtr, varname, block)                       \
+do {                                                                    \
+    typeof((vectorPtr)) __v_vfe = (vectorPtr);                          \
+    for (size_t __dc4c_i = 0; __dc4c_i < __v_vfe->count; ++__dc4c_i) {  \
+        typeof(__v_vfe->content) varname = &__v_vfe->content[__dc4c_i]; \
+        { block }                                                       \
+    }                                                                   \
+} while (0)
 
 #define vector_size(vectorPtr) ({ (vectorPtr)->count; })
 
@@ -136,21 +152,24 @@ for (size_t __dc4c_i = 0; __dc4c_i < (vectorPtr)->count; ++__dc4c_i) {      \
 
 #define vector_sort(vectorPtr, comp)                       \
 do {                                                       \
-    if ((vectorPtr)->count > 0) {                          \
-        qsort((vectorPtr)->content,                        \
-              (vectorPtr)->count,                          \
+    typeof((vectorPtr)) __v_vs = (vectorPtr);              \
+    if (__v_vs->count > 0) {                               \
+        qsort(__v_vs->content,                             \
+              __v_vs->count,                               \
               (int (*)(const void*, const void*)) (comp)); \
     }                                                      \
 } while (0)
 
 #define vector_search(vectorPtr, keyPtr, comp) ({                 \
-    typeof((vectorPtr)->content) toReturn = NULL;                 \
-    if ((vectorPtr)->count > 0) {                                 \
-        toReturn = (typeof((vectorPtr)->content)) bsearch(        \
+    typeof((vectorPtr)) __v_vse = (vectorPtr);                    \
+                                                                  \
+    typeof(__v_vse->content) toReturn = NULL;                     \
+    if (__v_vse->count > 0) {                                     \
+        toReturn = (typeof(__v_vse->content)) bsearch(            \
                        (const void*) (keyPtr),                    \
-                       (const void*) (vectorPtr)->content,        \
-                       (vectorPtr)->count,                        \
-                       sizeof(*(vectorPtr)->content),             \
+                       (const void*) __v_vse->content,            \
+                       __v_vse->count,                            \
+                       sizeof(*__v_vse->content),                 \
                        (int (*)(const void*, const void*)) (comp) \
                    );                                             \
     }                                                             \
@@ -162,33 +181,42 @@ do {                              \
     free((vectorPtr)->content);   \
 } while (0)
 
-#define vector_destroyWith(vectorPtr, valueFunc)    \
-do {                                                \
-    vector_iterate(vectorPtr, valueFunc(*element);) \
-    vector_destroy(vectorPtr);                      \
+#define vector_destroyWith(vectorPtr, valueFunc)  \
+do {                                              \
+    typeof((vectorPtr)) __v_vdw = (vectorPtr);    \
+                                                  \
+    vector_iterate(__v_vdw, valueFunc(*element);) \
+    vector_destroy(__v_vdw);                      \
 } while (0)
 
 #define vector_destroyWithPtr(vectorPtr, ptrFunc) \
 do {                                              \
-    vector_iterate(vectorPtr, ptrFunc(element);)  \
-    vector_destroy(vectorPtr);                    \
+    typeof((vectorPtr)) __v_vdwp = (vectorPtr);   \
+                                                  \
+    vector_iterate(__v_vdwp, ptrFunc(element);)   \
+    vector_destroy(__v_vdwp);                     \
 } while (0)
 
-#define vector_init(vectorPtr)   \
-do {                             \
-    (vectorPtr)->cap     = 0;    \
-    (vectorPtr)->count   = 0;    \
-    (vectorPtr)->content = NULL; \
+#define vector_init(vectorPtr)                 \
+do {                                           \
+    typeof((vectorPtr)) __v_vin = (vectorPtr); \
+                                               \
+    __v_vin->cap     = 0;                      \
+    __v_vin->count   = 0;                      \
+    __v_vin->content = NULL;                   \
 } while (0)
 
 #define vector_initializer { 0, 0, NULL }
 
 #define vector_copy(lhsPtr, rhsPtr)                                \
 do {                                                               \
-    vector_init(lhsPtr);                                           \
-    vector_reserve(lhsPtr, (rhsPtr)->cap);                         \
-    memcpy((lhsPtr)->content, (rhsPtr)->content, (rhsPtr)->count); \
-    (lhsPtr)->count = (rhsPtr)->count;                             \
+    typeof((lhsPtr)) __v_l_vc = (lhsPtr);                          \
+    typeof((rhsPtr)) __v_r_vc = (rhsPtr);                          \
+                                                                   \
+    vector_init(__v_l_vc);                                         \
+    vector_reserve(__v_l_vc, __v_r_vc->cap);                       \
+    memcpy(__v_l_vc->content, __v_r_vc->content, __v_r_vc->count); \
+    __v_l_vc->count = __v_r_vc->count;                             \
 } while (0)
 
 #define typedef_vector_named(name, type)       \
