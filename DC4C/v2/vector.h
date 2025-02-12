@@ -40,24 +40,25 @@ struct vector_##name {           \
 
 #define dc4c_vector(type) vector_named(type, type)
 
-#define vector_reserve(vectorPtr, newSize) ({                                         \
-    bool result = false;                                                              \
-    do {                                                                              \
-        if ((vectorPtr)->cap >= (newSize)) {                                          \
-            break;                                                                    \
-        }                                                                             \
-                                                                                      \
-        typeof((vectorPtr)->content) tmp = (typeof((vectorPtr)->content))             \
-            realloc((vectorPtr)->content, sizeof(*(vectorPtr)->content) * (newSize)); \
-        if (tmp == NULL) {                                                            \
-            break;                                                                    \
-        }                                                                             \
-                                                                                      \
-        (vectorPtr)->content = tmp;                                                   \
-        (vectorPtr)->cap     = (newSize);                                             \
-        result = true;                                                                \
-    } while (0);                                                                      \
-    result;                                                                           \
+#define vector_reserve(vectorPtr, newSize) ({                                                       \
+    bool result = false;                                                                            \
+    do {                                                                                            \
+        typeof((vectorPtr)) v = (vectorPtr);                                                        \
+        typeof((newSize))   s = (newSize);                                                          \
+        if (v->cap >= s) {                                                                          \
+            break;                                                                                  \
+        }                                                                                           \
+                                                                                                    \
+        typeof(v->content) tmp = (typeof(v->content)) realloc(v->content, sizeof(*v->content) * s); \
+        if (tmp == NULL) {                                                                          \
+            break;                                                                                  \
+        }                                                                                           \
+                                                                                                    \
+        v->content = tmp;                                                                           \
+        v->cap     = s;                                                                             \
+        result = true;                                                                              \
+    } while (0);                                                                                    \
+    result;                                                                                         \
 })
 
 #define vector_push_back(vectorPtr, value) ({                                                   \
