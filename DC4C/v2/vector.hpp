@@ -19,7 +19,7 @@
  * DC4C, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if __cplusplus < 201103
+#if __cplusplus < 201103L
 # error This library requires C++11 or newer.
 #endif
 
@@ -30,10 +30,22 @@
 # ifndef __DC4C_v2_vector_hpp
 # define __DC4C_v2_vector_hpp
 
-# if __cplusplus >= 202002
-#  define __DC4C_CXX20_constexpr constexpr
+# if __cplusplus >= 201402L
+#  define __DC4C_CONSTEXPR_SINCE_CXX14 constexpr
 # else
-#  define __DC4C_CXX20_constexpr
+#  define __DC4C_CONSTEXPR_SINCE_CXX14
+# endif
+
+# if __cplusplus >= 201703L
+#  define __DC4C_CONSTEXPR_SINCE_CXX17 constexpr
+# else
+#  define __DC4C_CONSTEXPR_SINCE_CXX17
+# endif
+
+# if __cplusplus >= 202002L
+#  define __DC4C_CONSTEXPR_SINCE_CXX20 constexpr
+# else
+#  define __DC4C_CONSTEXPR_SINCE_CXX20
 # endif
 
 # include <algorithm>
@@ -41,7 +53,7 @@
 # include <vector>
 
 namespace dc4c {
-# if __cplusplus >= 202002
+# if __cplusplus >= 202002L
 template<typename T>
 concept is_dc4c_vector = requires (T t) {
     t.count = std::size_t(0);
@@ -52,7 +64,7 @@ concept is_dc4c_vector = requires (T t) {
 # endif
 
 template<
-# if __cplusplus >= 202002
+# if __cplusplus >= 202002L
 is_dc4c_vector
 # else
 typename
@@ -62,26 +74,26 @@ class vector {
     T underlying;
 
 public:
-    using size_type = std::decay<decltype(underlying.count)>::type;
-    using value_type = std::decay<decltype(*underlying.content)>::type;
+    using size_type = typename std::decay<decltype(underlying.count)>::type;
+    using value_type = typename std::decay<decltype(*underlying.content)>::type;
 
     constexpr inline vector(): underlying(vector_initializer) {}
 
-    constexpr inline vector(const vector& other) {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(const vector& other) {
         vector_copy(&underlying, &other.underlying);
     }
 
-    constexpr inline vector(vector&& other): underlying(other.underlying) {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(vector&& other): underlying(other.underlying) {
         vector_create(&other.underlying);
     }
 
-    constexpr inline vector(const T* cVector) {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(const T* cVector) {
         vector_copy(&underlying, cVector);
     }
 
     constexpr inline vector(const T& cVector): vector(&cVector) {}
 
-    constexpr inline vector(const std::vector<value_type>& other): underlying(vector_initializer) {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(const std::vector<value_type>& other): underlying(vector_initializer) {
         reserve(other.size());
 
         for (const auto& element : other) {
@@ -90,40 +102,40 @@ public:
     }
 
     template<typename InputIt>
-    constexpr inline vector(InputIt begin, InputIt end): underlying(vector_initializer) {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(InputIt begin, InputIt end): underlying(vector_initializer) {
         for (; begin != end; ++begin) {
             push_back(*begin);
         }
     }
 
-    constexpr inline ~vector() {
+    __DC4C_CONSTEXPR_SINCE_CXX20 inline ~vector() {
         vector_destroy(&underlying);
     }
 
-    constexpr inline auto operator=(const vector& other) -> vector& {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(const vector& other) -> vector& {
         vector_destroy(&underlying);
         vector_copy(&underlying, &other.underlying);
         return *this;
     }
 
-    constexpr inline auto operator=(vector&& other) -> vector& {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(vector&& other) -> vector& {
         vector_destroy(&underlying);
         underlying = other.underlying;
         vector_create(&other.underlying);
         return *this;
     }
 
-    constexpr inline auto operator=(const T* cVector) -> vector& {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(const T* cVector) -> vector& {
         vector_destroy(&underlying);
         vector_copy(&underlying, cVector);
         return *this;
     }
 
-    constexpr inline auto operator=(const T& cVector) -> vector& {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(const T& cVector) -> vector& {
         return *this = &cVector;
     }
 
-    constexpr inline auto data() -> T& {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto data() -> T& {
         return underlying;
     }
 
@@ -131,7 +143,7 @@ public:
         return underlying;
     }
 
-    constexpr inline operator std::vector<value_type>() const {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline operator std::vector<value_type>() const {
         auto toReturn = std::vector<value_type>();
         toReturn.reserve(size());
         for (const auto& element : *this) {
@@ -140,7 +152,7 @@ public:
         return toReturn;
     }
 
-    constexpr inline operator T*() {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline operator T*() {
         return &underlying;
     }
 
@@ -148,7 +160,7 @@ public:
         return &underlying;
     }
 
-    constexpr inline auto operator->() -> T* {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator->() -> T* {
         return *this;
     }
 
@@ -168,33 +180,33 @@ public:
         return underlying.content + underlying.count;
     }
 
-    constexpr inline void push_back(const value_type& value) {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline void push_back(const value_type& value) {
         if (!vector_push_back(&underlying, value)) {
             throw std::bad_alloc();
         }
     }
 
-    constexpr inline auto pop_back() -> value_type {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto pop_back() -> value_type {
         return vector_pop_back(&underlying);
     }
 
-    constexpr inline auto erase(size_type index) -> value_type {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto erase(size_type index) -> value_type {
         return vector_erase(&underlying, index);
     }
 
-    constexpr inline void insert(const value_type& value, size_type index) {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline void insert(const value_type& value, size_type index) {
         if (!vector_insert(&underlying, value, index)) {
             throw std::bad_alloc();
         }
     }
 
-    constexpr inline void reserve(size_type newCap) {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline void reserve(size_type newCap) {
         if (!vector_reserve(&underlying, newCap)) {
             throw std::bad_alloc();
         }
     }
 
-    constexpr inline void clear() {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline void clear() {
         vector_clear(&underlying);
     }
 
@@ -206,7 +218,7 @@ public:
         return vector_capacity(&underlying);
     }
 
-    constexpr inline auto getUnderlyingData() noexcept -> value_type* {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto getUnderlyingData() noexcept -> value_type* {
         return underlying.content;
     }
 
@@ -215,7 +227,7 @@ public:
     }
 
     template<typename C = std::less<value_type>>
-    __DC4C_CXX20_constexpr inline void sort(const C& comp = C()) {
+    __DC4C_CONSTEXPR_SINCE_CXX20 inline void sort(const C& comp = C()) {
         std::sort(begin(), end(), comp);
     }
 };
