@@ -219,8 +219,17 @@ do {                                                               \
     __v_l_vc->count = __v_r_vc->count;                             \
 } while (0)
 
+#ifdef __cplusplus
+# include "vector.hpp"
+#endif
+
+#ifndef vector_cxx_wrapper
+# define vector_cxx_wrapper(name, actual)
+#endif
+
 #define typedef_vector_named(name, type)       \
 vector_named(name, type);                      \
+vector_cxx_wrapper(name, vector_##name);       \
 typedef struct vector_##name vector_##name##_t
 
 #define typedef_vector(type) typedef_vector_named(type, type)
