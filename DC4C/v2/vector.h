@@ -99,6 +99,7 @@ do {                            \
     (vectorPtr)->count = 0;     \
 } while (0)
 
+// FIXME: String literals fail here
 #define vector_insert(vectorPtr, value, position) ({                  \
     bool result = false;                                              \
     do {                                                              \
