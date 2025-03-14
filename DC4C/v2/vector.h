@@ -192,7 +192,7 @@ do {                              \
 do {                                                  \
     __DC4C_TYPEOF((vectorPtr)) __v_vdw = (vectorPtr); \
                                                       \
-    vector_iterate(__v_vdw, valueFunc(*element);)     \
+    vector_iterate(__v_vdw, valueFunc(*element););    \
     vector_destroy(__v_vdw);                          \
 } while (0)
 
@@ -200,7 +200,7 @@ do {                                                  \
 do {                                                   \
     __DC4C_TYPEOF((vectorPtr)) __v_vdwp = (vectorPtr); \
                                                        \
-    vector_iterate(__v_vdwp, ptrFunc(element);)        \
+    vector_iterate(__v_vdwp, ptrFunc(element););       \
     vector_destroy(__v_vdwp);                          \
 } while (0)
 
