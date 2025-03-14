@@ -163,6 +163,7 @@ do {                                                       \
     if (__v_vs->count > 0) {                               \
         qsort(__v_vs->content,                             \
               __v_vs->count,                               \
+              sizeof(*__v_vs->content),                    \
               (int (*)(const void*, const void*)) (comp)); \
     }                                                      \
 } while (0)
