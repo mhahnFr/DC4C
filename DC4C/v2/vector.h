@@ -50,7 +50,7 @@ struct vector_##name {           \
     bool result = false;                                                      \
     do {                                                                      \
         __DC4C_TYPEOF((vectorPtr)) __v_vr = (vectorPtr);                      \
-        __DC4C_TYPEOF((newSize))   __s_vr = (newSize);                        \
+        size_t __s_vr = (size_t) (newSize);                                   \
                                                                               \
         if (__v_vr->cap >= __s_vr) {                                          \
             break;                                                            \
