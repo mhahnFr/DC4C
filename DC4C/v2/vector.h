@@ -53,6 +53,7 @@ struct vector_##name {           \
         size_t __s_vr = (size_t) (newSize);                                   \
                                                                               \
         if (__v_vr->cap >= __s_vr) {                                          \
+            result = true;                                                    \
             break;                                                            \
         }                                                                     \
                                                                               \
