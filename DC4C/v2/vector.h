@@ -223,7 +223,8 @@ do {                                                               \
                                                                    \
     vector_init(__v_l_vc);                                         \
     vector_reserve(__v_l_vc, __v_r_vc->cap);                       \
-    memcpy(__v_l_vc->content, __v_r_vc->content, __v_r_vc->count); \
+    memcpy(__v_l_vc->content, __v_r_vc->content,                   \
+           __v_r_vc->count * sizeof(*__v_l_vc->content));          \
     __v_l_vc->count = __v_r_vc->count;                             \
 } while (0)
 
