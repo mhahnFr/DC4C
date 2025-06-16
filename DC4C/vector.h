@@ -1,22 +1,16 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Copyright (C) 2023 - 2025  mhahnFr
+ * Written in 2023 - 2025 by mhahnFr
  *
  * This file is part of DC4C.
  *
- * DC4C is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * To the extent possible under law, the author(s) have dedicated all copyright
+ * and related and neighboring rights to this software to the public domain
+ * worldwide. This software is distributed without any warranty.
  *
- * DC4C is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * DC4C, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the CC0 Public Domain Dedication along with DC4C,
+ * see the file LICENSE. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
 #ifndef __DC4C_vector_h

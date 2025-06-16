@@ -31,8 +31,8 @@ The C implementation requires the C99 standard, the C++ implementation the C++11
 The interoperability with C++17's `std::optional` is only available when compiled with the C++17 (or newer) standard.
 
 ## Final notes
-This repository is licensed under the terms of the GNU GPL in version 3 or later.
+This project is marked with CC0 1.0 Universal.
 
-© Copyright 2023 - 2025 [mhahnFr][1]
+Written in 2023 - 2025 by [mhahnFr][1]
 
 [1]: https://github.com/mhahnFr
