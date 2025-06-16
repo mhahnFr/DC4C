@@ -25,6 +25,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * Defines the vector structure.
+ *
+ * @param name the name of the vector
+ * @param type the contained type
+ */
 #define __dc4c_vector_named(name, type) \
 struct vector_##name {                  \
     size_t count;                       \
@@ -38,6 +44,16 @@ struct vector_##name {                  \
 # define __DC4C_TYPEOF(expr) typeof(expr)
 #endif
 
+/**
+ * @brief Allocates enough storage for the given vector to hold at least the given
+ * amount of objects.
+ *
+ * If the allocation failed, the content of the given vector is left unchanged.
+ *
+ * @param vectorPtr the pointer to a DC4C vector
+ * @param newSize the new amount of objects the vector should be able to hold
+ * @return whether the vector holds enough memory
+ */
 #define vector_reserve(vectorPtr, newSize) ({                                      \
     bool __vr_result = false;                                                      \
     do {                                                                           \
@@ -62,6 +78,15 @@ struct vector_##name {                  \
     __vr_result;                                                                   \
 })
 
+/**
+ * @brief Adds the given value at the end of the given vector.
+ *
+ * If the allocation failed, the content of the given vector is left unchanged.
+ *
+ * @param vectorPtr th pointer to the vector
+ * @param value the value to be added
+ * @return whether the value was added successfully
+ */
 #define vector_push_back(vectorPtr, value) ({                                         \
     bool __vpb_result = false;                                                        \
     do {                                                                              \
@@ -80,6 +105,12 @@ struct vector_##name {                  \
     __vpb_result;                                                                     \
 })
 
+/**
+ * Removes the last element of the given vector.
+ *
+ * @param vectorPtr the pointer to the vector
+ * @return the removed value
+ */
 #define vector_pop_back(vectorPtr) ({                                                             \
     __DC4C_TYPEOF((vectorPtr)) __v_vpopb = (vectorPtr);                                           \
     __DC4C_TYPEOF(*__v_vpopb->content) __vpb_toReturn = __v_vpopb->content[__v_vpopb->count - 1]; \
@@ -87,11 +118,30 @@ struct vector_##name {                  \
     __vpb_toReturn;                                                                               \
 })
 
+/**
+ * Removes all content of the given vector.
+ *
+ * @param vectorPtr the pointer to the vector
+ */
 #define vector_clear(vectorPtr) \
 do {                            \
     (vectorPtr)->count = 0;     \
 } while (0)
 
+/**
+ * @brief Inserts the given value into the given vector at the given position.
+ *
+ * If the position is greater than the size of the vector, the value is added
+ * at the end of the vector. If the position is smaller than zero, the value is
+ * added at the beginning of the vector.<br>
+ * In case that the allocation failed, the content of the vector is left
+ * unchanged.
+ *
+ * @param vectorPtr the pointer to the vector
+ * @param value the value to be inserted
+ * @param position the position to insert the value at
+ * @return whether the value was inserted successfully
+ */
 #define vector_insert(vectorPtr, value, position) ({                  \
     bool __vi_result = false;                                         \
     do {                                                              \
@@ -121,6 +171,15 @@ do {                            \
     __vi_result;                                                      \
 })
 
+/**
+ * @brief Erases the value at the given position.
+ *
+ * The given position must be in the range [0 ... size - 1].
+ *
+ * @param vectorPtr the pointer to the vector
+ * @param position the position to be erased
+ * @return the erased value
+ */
 #define vector_erase(vectorPtr, position) ({                                 \
     __DC4C_TYPEOF((vectorPtr)) __v_ve = (vectorPtr);                         \
     __DC4C_TYPEOF((position)) __p_ve = (position);                           \
@@ -132,6 +191,14 @@ do {                            \
     __ve_toReturn;                                                           \
 })
 
+/**
+ * Iterates over the content of the given vector and executes the given block
+ * of code for each of its elements.
+ *
+ * @param vectorPtr the pointer to the vector
+ * @param varname the name of the iteration variable
+ * @param block the code to execute for each element
+ */
 #define vector_forEach(vectorPtr, varname, block)                              \
 do {                                                                           \
     __DC4C_TYPEOF((vectorPtr)) __v_vfe = (vectorPtr);                          \
@@ -141,14 +208,46 @@ do {                                                                           \
     }                                                                          \
 } while (0)
 
+/**
+ * Returns the amount of elements held by the given vector.
+ *
+ * @param vectorPtr the pointer to the vector
+ * @return the amount of elements in the given vector
+ */
 #define vector_size(vectorPtr) ({ (vectorPtr)->count; })
 
+/**
+ * Returns the amount of objects the given vector is currently capable to hold.
+ *
+ * @param vectorPtr the pointer to the vector
+ * @return the amount of elements the given vector can hold
+ */
 #define vector_capacity(vectorPtr) ({ (vectorPtr)->cap; })
 
+/**
+ * Returns the underlying content of the given vector.
+ *
+ * @param vectorPtr the pointer to the vector
+ * @return the underlying content of the given vector
+ */
 #define vector_data(vectorPtr) ({ (vectorPtr)->content; })
 
+/**
+ * @brief Calls the given block of code for each of the elements in the given vector.
+ *
+ * The iteration variable is called @c element .
+ *
+ * @param vectorPtr the pointer to the vector
+ * @param block the code to be executed for each element in the given vector
+ */
 #define vector_iterate(vectorPtr, block) vector_forEach(vectorPtr, element, block)
 
+/**
+ * Sorts the given vector using the given comparison function.
+ *
+ * @param vectorPtr the pointer to the vector
+ * @param comp the comparison function
+ */
 #define vector_sort(vectorPtr, comp)                       \
 do {                                                       \
     __DC4C_TYPEOF((vectorPtr)) __v_vs = (vectorPtr);       \
@@ -160,6 +259,16 @@ do {                                                       \
     }                                                      \
 } while (0)
 
+/**
+ * @brief Searches the given vector for the given element.
+ *
+ * The vector is searched using @c bsearch and should be sorted.
+ *
+ * @param vectorPtr the pointer to the vector
+ * @param keyPtr the pointer to the searched element
+ * @param comp the comparison function used to sort the vector
+ * @return the pointer to the searched element in the vector or @c NULL if not found
+ */
 #define vector_search(vectorPtr, keyPtr, comp) ({                       \
     __DC4C_TYPEOF((vectorPtr)) __v_vse = (vectorPtr);                   \
                                                                         \
@@ -176,11 +285,29 @@ do {                                                       \
     __vse_toReturn;                                                     \
 })
 
+/**
+ * @brief Destroys the given vector.
+ *
+ * The destroyed vector must be reconstructed before being used again. If the
+ * contained objects need to be destroyed as well, consider using
+ * @c vector_destroyWith or @c vector_destroyWithPtr .
+ *
+ * @param vectorPtr the pointer to the vector
+ */
 #define vector_destroy(vectorPtr) \
 do {                              \
     free((vectorPtr)->content);   \
 } while (0)
 
+/**
+ * @brief Destroys the given vector and its contents.
+ *
+ * Calls the given function for each object contained in the given vector. The
+ * vector must be reconstructed before being used again.
+ *
+ * @param vectorPtr the pointer to the given vector
+ * @param valueFunc the function to destroy the contained objects
+ */
 #define vector_destroyWith(vectorPtr, valueFunc)      \
 do {                                                  \
     __DC4C_TYPEOF((vectorPtr)) __v_vdw = (vectorPtr); \
@@ -189,6 +316,15 @@ do {                                                  \
     vector_destroy(__v_vdw);                          \
 } while (0)
 
+/**
+ * @brief Destroys the given vector and its contents.
+ *
+ * Calls the given function for each object contained in the given vector. The
+ * vector must be reconstructed before being used again.
+ *
+ * @param vectorPtr the pointer to the vector
+ * @param ptrFunc the function to destroy the contained objects
+ */
 #define vector_destroyWithPtr(vectorPtr, ptrFunc)      \
 do {                                                   \
     __DC4C_TYPEOF((vectorPtr)) __v_vdwp = (vectorPtr); \
@@ -197,6 +333,11 @@ do {                                                   \
     vector_destroy(__v_vdwp);                          \
 } while (0)
 
+/**
+ * Initializes the given vector.
+ *
+ * @param vectorPtr the pointer to the vector
+ */
 #define vector_init(vectorPtr)                        \
 do {                                                  \
     __DC4C_TYPEOF((vectorPtr)) __v_vin = (vectorPtr); \
@@ -206,8 +347,15 @@ do {                                                  \
     __v_vin->content = NULL;                          \
 } while (0)
 
+/** The initial values for a vector. */
 #define vector_initializer { 0, 0, NULL }
 
+/**
+ * Copies the given vector into the given vector.
+ *
+ * @param lhsPtr the pointer to the target vector
+ * @param rhsPtr the pointer to the vector to be copied
+ */
 #define vector_copy(lhsPtr, rhsPtr)                                \
 do {                                                               \
     __DC4C_TYPEOF((lhsPtr)) __v_l_vc = (lhsPtr);                   \
@@ -227,11 +375,22 @@ do {                                                               \
 # define __dc4c_vector_cxx_wrapper(name, actual)
 #endif
 
+/**
+ * Defines a vector of the given name and containing the given type.
+ *
+ * @param name the name of the vector
+ * @param type the contained type
+ */
 #define typedef_vector_named(name, type)        \
 __dc4c_vector_named(name, type);                \
 __dc4c_vector_cxx_wrapper(name, vector_##name); \
 typedef struct vector_##name vector_##name##_t
 
+/**
+ * Defines a vector containing the given type.
+ *
+ * @param type the contained type
+ */
 #define typedef_vector(type) typedef_vector_named(type, type)
 
 #endif /* __DC4C_vector_h */
