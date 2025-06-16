@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Written in 2023 - 2024 by mhahnFr
+ * Written in 2023 - 2025 by mhahnFr
  *
  * This file is part of DC4C.
  *
@@ -22,7 +22,7 @@
  
  #include <utility>
  
- #define pair_methods_cxx(type1, type2, name)                                           \
+ #define __dc4c_pair_methods_cxx(type1, type2, name)                                    \
  namespace dc4c {                                                                       \
  static inline auto to_cpp(const dc4c::pair_##name & self) -> std::pair<type1, type2> { \
      return std::make_pair(self.first, self.second);                                    \
@@ -33,9 +33,9 @@
  }                                                                                      \
  }
  
- #define pair_namespace_begin namespace dc4c {
- #define pair_namespace_end   ; }
- #define pair_namespace_name  dc4c::
+ #define __dc4c_pair_namespace_begin namespace dc4c {
+ #define __dc4c_pair_namespace_end   ; }
+ #define __dc4c_pair_namespace_name  dc4c::
 
  #endif /* __DC4C_pair_hpp */
 #endif /* __DC4C_pair_h */

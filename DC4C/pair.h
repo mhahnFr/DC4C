@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Written in 2023 - 2024 by mhahnFr
+ * Written in 2023 - 2025 by mhahnFr
  *
  * This file is part of DC4C.
  *
@@ -19,34 +19,31 @@
 #ifdef __cplusplus
  #include "pair.hpp"
 #else
- #define pair_namespace_begin
- #define pair_namespace_end
- #define pair_namespace_name
- #define pair_methods_cxx(type1, type2, name)
+ #define __dc4c_pair_namespace_begin
+ #define __dc4c_pair_namespace_end
+ #define __dc4c_pair_namespace_name
+ #define __dc4c_pair_methods_cxx(type1, type2, name)
 #endif
 
-#define pair_named(name, type1, type2) \
-    pair_namespace_begin               \
-        struct pair_##name {           \
-            type1 first;               \
-            type2 second;              \
-        }                              \
-    pair_namespace_end
+#define __dc4c_pair_named(name, type1, type2) \
+    __dc4c_pair_namespace_begin               \
+        struct pair_##name {                  \
+            type1 first;                      \
+            type2 second;                     \
+        }                                     \
+    __dc4c_pair_namespace_end
 
-#define dc4c_pair(type1, type2) pair_named(type1 ## _ ## type2, type1, type2)
-
-#define pair_methods(type1, type2, name)                                                           \
-static inline struct pair_namespace_name pair_##name make_pair_##name(type1 first, type2 second) { \
-    struct pair_namespace_name pair_##name toReturn = { first, second };                           \
-    return toReturn;                                                                               \
-}                                                                                                  \
-                                                                                                   \
-pair_methods_cxx(type1, type2, name)
+#define __dc4c_pair_methods(type1, type2, name)                                                           \
+static inline struct __dc4c_pair_namespace_name pair_##name make_pair_##name(type1 first, type2 second) { \
+    struct __dc4c_pair_namespace_name pair_##name toReturn = { first, second };                           \
+    return toReturn;                                                                                      \
+}                                                                                                         \
+__dc4c_pair_methods_cxx(type1, type2, name)
 
 #define typedef_pair_named(name, type1, type2) \
-pair_named(name, type1, type2);                \
-pair_methods(type1, type2, name)               \
-typedef struct pair_namespace_name pair_##name pair_##name##_t
+__dc4c_pair_named(name, type1, type2);         \
+__dc4c_pair_methods(type1, type2, name)        \
+typedef struct __dc4c_pair_namespace_name pair_##name pair_##name##_t
 
 #define typedef_pair(type1, type2) typedef_pair_named(type1 ## _ ## type2, type1, type2)
 
