@@ -227,7 +227,7 @@ public:
 };
 }
 
-#define vector_cxx_wrapper(name, actual) \
+#define __dc4c_vector_cxx_wrapper(name, actual) \
 namespace dc4c {                         \
 using vector_##name = vector<actual>;    \
 }
