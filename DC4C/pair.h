@@ -25,6 +25,13 @@
  #define __dc4c_pair_methods_cxx(type1, type2, name)
 #endif
 
+/**
+ * Defines the pair structure using the given name and the given types.
+ *
+ * @param name the name of the pair
+ * @param type1 the first contained type
+ * @param type2 the second contained type
+ */
 #define __dc4c_pair_named(name, type1, type2) \
     __dc4c_pair_namespace_begin               \
         struct pair_##name {                  \
@@ -33,6 +40,13 @@
         }                                     \
     __dc4c_pair_namespace_end
 
+/**
+ * Defines the helper functions for the pair.
+ *
+ * @param type1 the first contained type
+ * @param type2 the second contained type
+ * @param name the name of the pair
+ */
 #define __dc4c_pair_methods(type1, type2, name)                                                           \
 static inline struct __dc4c_pair_namespace_name pair_##name make_pair_##name(type1 first, type2 second) { \
     struct __dc4c_pair_namespace_name pair_##name toReturn = { first, second };                           \
@@ -40,11 +54,30 @@ static inline struct __dc4c_pair_namespace_name pair_##name make_pair_##name(typ
 }                                                                                                         \
 __dc4c_pair_methods_cxx(type1, type2, name)
 
+/**
+ * @brief Defines a pair containing the two given types.
+ *
+ * The helper functions are also defined here. If compiled in C++ mode, the C++
+ * helper functions are defined here as well.
+ *
+ * @param name the name of the optional
+ * @param type1 the first contained type
+ * @param type2 the second contained type
+ */
 #define typedef_pair_named(name, type1, type2) \
 __dc4c_pair_named(name, type1, type2);         \
 __dc4c_pair_methods(type1, type2, name)        \
 typedef struct __dc4c_pair_namespace_name pair_##name pair_##name##_t
 
+/**
+ * @brief Defines a pair containing the two given types.
+ *
+ * The helper functions are also defined here. If compiled in C++ mode, the C++
+ * helper functions are defined here as well.
+ *
+ * @param type1 the first contained type
+ * @param type2 the second contained type
+ */
 #define typedef_pair(type1, type2) typedef_pair_named(type1 ## _ ## type2, type1, type2)
 
 #endif /* __DC4C_pair_h */

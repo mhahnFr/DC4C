@@ -21,7 +21,14 @@
  #define __DC4C_pair_hpp
  
  #include <utility>
- 
+
+ /**
+  * Defines the C++ helper functions for the pair.
+  *
+  * @param type1 the first contained type
+  * @param type2 the second contained type
+  * @param name the name of the pair
+  */
  #define __dc4c_pair_methods_cxx(type1, type2, name)                                    \
  namespace dc4c {                                                                       \
  static inline auto to_cpp(const dc4c::pair_##name & self) -> std::pair<type1, type2> { \
@@ -32,9 +39,12 @@
      return make_pair_##name(p.first, p.second);                                        \
  }                                                                                      \
  }
- 
+
+ /** The beginning of the namespace. */
  #define __dc4c_pair_namespace_begin namespace dc4c {
+ /** The end of the namespace.       */
  #define __dc4c_pair_namespace_end   ; }
+ /** The prefix of the namespace.    */
  #define __dc4c_pair_namespace_name  dc4c::
 
  #endif /* __DC4C_pair_hpp */
