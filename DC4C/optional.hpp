@@ -23,7 +23,7 @@
  #if __cplusplus >= 201703L
   #include <optional>
   
-  #define optional_methods_cxx(type, name)                                                         \
+  #define __dc4c_optional_methods_cxx(type, name)                                                  \
   namespace dc4c {                                                                                 \
   constexpr static inline auto to_cpp(const dc4c::optional_##name & self) -> std::optional<type> { \
       if (self.has_value) {                                                                        \
@@ -43,12 +43,12 @@
   }                                                                                                \
   }
  #else
-  #define optional_methods_cxx(type, name)
+  #define __dc4c_optional_methods_cxx(type, name)
  #endif
  
- #define optional_namespace_begin namespace dc4c {
- #define optional_namespace_end   }
- #define optional_namespace_name  dc4c::
+ #define __dc4c_optional_namespace_begin namespace dc4c {
+ #define __dc4c_optional_namespace_end   }
+ #define __dc4c_optional_namespace_name  dc4c::
 
  #endif /* __DC4C_optional_hpp */
 #endif /* __DC4C_optional_h */
