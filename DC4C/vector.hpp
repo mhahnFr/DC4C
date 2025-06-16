@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Copyright (C) 2023 - 2024  mhahnFr
+ * Copyright (C) 2023 - 2025  mhahnFr
  *
  * This file is part of DC4C.
  *
@@ -19,195 +19,224 @@
  * DC4C, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#if __cplusplus < 201103
- #error This library requires C++11 or newer.
+#if __cplusplus < 201103L
+# error This library requires C++11 or newer.
 #endif
 
-#ifndef __DC4C_vector_h
- #warning Wrong inclusion of "vector.hpp" redirected to #include "vector.h"!
- #include "vector.h"
+#ifndef __DC4C_v2_vector_h
+# warning Wrong inclusion of "vector.hpp" redirected to #include "vector.h"!
+# include "vector.h"
 #else
- #ifndef __DC4C_vector_hpp
- #define __DC4C_vector_hpp
+# ifndef __DC4C_v2_vector_hpp
+# define __DC4C_v2_vector_hpp
 
- #if __cplusplus >= 202002
-  #define __DC4C_CXX20_constexpr constexpr
- #else
-  #define __DC4C_CXX20_constexpr
- #endif
+# if __cplusplus >= 201402L
+#  define __DC4C_CONSTEXPR_SINCE_CXX14 constexpr
+# else
+#  define __DC4C_CONSTEXPR_SINCE_CXX14
+# endif
 
- #include <algorithm>
- #include <functional>
- #include <vector>
+# if __cplusplus >= 201703L
+#  define __DC4C_CONSTEXPR_SINCE_CXX17 constexpr
+# else
+#  define __DC4C_CONSTEXPR_SINCE_CXX17
+# endif
 
- #define vector_methods_cxx(type, name)                                                    \
- namespace dc4c {                                                                          \
- class vector_bridge_##name {                                                              \
-     vector_##name underlying;                                                             \
-                                                                                           \
- public:                                                                                   \
-     inline vector_bridge_##name() {                                                       \
-         vector_##name##_create(&underlying);                                              \
-     }                                                                                     \
-                                                                                           \
-     inline vector_bridge_##name(const vector_bridge_##name & other) {                     \
-         vector_##name##_copy(&underlying, &other.underlying);                             \
-     }                                                                                     \
-                                                                                           \
-     inline vector_bridge_##name(vector_bridge_##name && other) {                          \
-         underlying = other.underlying;                                                    \
-         vector_##name##_create(&other.underlying);                                        \
-     }                                                                                     \
-                                                                                           \
-     inline vector_bridge_##name(const std::vector<type> & other) {                        \
-         vector_##name##_create(&underlying);                                              \
-         vector_##name##_reserve(&underlying, other.capacity());                           \
-                                                                                           \
-         for (const auto & element : other) {                                              \
-             vector_##name##_push_back(&underlying, element);                              \
-         }                                                                                 \
-     }                                                                                     \
-                                                                                           \
-     inline vector_bridge_##name(const vector_##name& cVector) {                           \
-         vector_##name##_copy(&underlying, &cVector);                                      \
-     }                                                                                     \
-                                                                                           \
-     inline vector_bridge_##name(const vector_##name* cVector):                            \
-         vector_bridge_##name(*cVector) {}                                                 \
-                                                                                           \
-     template<typename InputIt>                                                            \
-     inline vector_bridge_##name(InputIt begin, InputIt end) {                             \
-         vector_##name##_create(&underlying);                                              \
-         for (; begin != end; ++begin) {                                                   \
-             vector_##name##_push_back(&underlying, *begin);                               \
-         }                                                                                 \
-     }                                                                                     \
-                                                                                           \
-     inline ~vector_bridge_##name() {                                                      \
-         vector_##name##_destroy(&underlying);                                             \
-     }                                                                                     \
-                                                                                           \
-     inline auto operator=(const vector_bridge_##name & other) -> vector_bridge_##name & { \
-         vector_##name##_destroy(&underlying);                                             \
-         vector_##name##_copy(&underlying, &other.underlying);                             \
-         return *this;                                                                     \
-     }                                                                                     \
-                                                                                           \
-     inline auto operator=(vector_bridge_##name && other) -> vector_bridge_##name & {      \
-         vector_##name##_destroy(&underlying);                                             \
-         underlying = other.underlying;                                                    \
-         vector_##name##_create(&other.underlying);                                        \
-         return *this;                                                                     \
-     }                                                                                     \
-                                                                                           \
-     inline auto operator=(const vector_##name& cVector) -> vector_bridge_##name& {        \
-         vector_##name##_destroy(&underlying);                                             \
-         vector_##name##_copy(&underlying, &cVector);                                      \
-         return *this;                                                                     \
-     }                                                                                     \
-                                                                                           \
-     inline auto operator=(const vector_##name* cVector) -> vector_bridge_##name& {        \
-         return *this = *cVector;                                                          \
-     }                                                                                     \
-                                                                                           \
-     inline auto data() -> vector_##name & {                                               \
-         return underlying;                                                                \
-     }                                                                                     \
-                                                                                           \
-     constexpr auto data() const -> const vector_##name & {                                \
-         return underlying;                                                                \
-     }                                                                                     \
-                                                                                           \
-     inline operator vector_##name *() {                                                   \
-         return &underlying;                                                               \
-     }                                                                                     \
-                                                                                           \
-     constexpr inline operator const vector_##name *() const {                             \
-         return &underlying;                                                               \
-     }                                                                                     \
-                                                                                           \
-     inline operator std::vector<type>() const {                                           \
-         auto toReturn = std::vector<type>();                                              \
-         toReturn.reserve(underlying.cap);                                                 \
-         for (size_t i = 0; i < underlying.count; ++i) {                                   \
-             toReturn.push_back(underlying.content[i]);                                    \
-         }                                                                                 \
-         return toReturn;                                                                  \
-     }                                                                                     \
-                                                                                           \
-     inline auto operator->() -> vector_##name * {                                         \
-         return *this;                                                                     \
-     }                                                                                     \
-                                                                                           \
-     constexpr inline auto operator->() const -> const vector_##name * {                   \
-         return *this;                                                                     \
-     }                                                                                     \
-                                                                                           \
-     constexpr inline auto operator[](const size_t position) const noexcept -> type & {    \
-         return underlying.content[position];                                              \
-     }                                                                                     \
-                                                                                           \
-     constexpr inline auto begin() const noexcept -> type * {                              \
-         return underlying.content;                                                        \
-     }                                                                                     \
-                                                                                           \
-     constexpr inline auto end() const noexcept -> type * {                                \
-         return underlying.content + underlying.count;                                     \
-     }                                                                                     \
-                                                                                           \
-     inline void push_back(type value) {                                                   \
-         if (!vector_##name##_push_back(*this, value)) {                                   \
-             throw std::bad_alloc();                                                       \
-         }                                                                                 \
-     }                                                                                     \
-                                                                                           \
-     inline auto pop_back() -> type {                                                      \
-         return vector_##name##_pop_back(*this);                                           \
-     }                                                                                     \
-                                                                                           \
-     inline auto erase(std::size_t index) -> type {                                        \
-         return vector_##name##_erase(*this, index);                                       \
-     }                                                                                     \
-                                                                                           \
-     inline void insert(type value, std::size_t index) {                                   \
-         if (!vector_##name##_insert(*this, value, index)) {                               \
-             throw std::bad_alloc();                                                       \
-         }                                                                                 \
-     }                                                                                     \
-                                                                                           \
-     inline void reserve(std::size_t newCap) {                                             \
-         if (!vector_##name##_reserve(*this, newCap)) {                                    \
-             throw std::bad_alloc();                                                       \
-         }                                                                                 \
-     }                                                                                     \
-                                                                                           \
-     inline void clear() {                                                                 \
-         vector_##name##_clear(*this);                                                     \
-     }                                                                                     \
-                                                                                           \
-     constexpr inline auto size() const noexcept -> std::size_t {                          \
-         return underlying.count;                                                          \
-     }                                                                                     \
-                                                                                           \
-     constexpr inline auto capacity() const noexcept -> std::size_t {                      \
-         return underlying.cap;                                                            \
-     }                                                                                     \
-                                                                                           \
-     inline auto getUnderlyingData() noexcept -> type* {                                   \
-         return underlying.content;                                                        \
-     }                                                                                     \
-                                                                                           \
-     constexpr inline auto getUnderlyingData() const noexcept -> type* {                   \
-         return underlying.content;                                                        \
-     }                                                                                     \
-                                                                                           \
-     template<typename C = std::less<type>>                                                \
-     __DC4C_CXX20_constexpr inline void sort(const C& comp = C()) {                        \
-         std::sort(begin(), end(), comp);                                                  \
-     }                                                                                     \
- };                                                                                        \
- }                                                                                         \
- 
- 
- #endif /* __DC4C_vector_hpp */
-#endif /* __DC4C_vector_h */
+# if __cplusplus >= 202002L
+#  define __DC4C_CONSTEXPR_SINCE_CXX20 constexpr
+# else
+#  define __DC4C_CONSTEXPR_SINCE_CXX20
+# endif
+
+# include <algorithm>
+# include <functional>
+# include <vector>
+
+namespace dc4c {
+# if __cplusplus >= 202002L
+template<typename T>
+concept is_dc4c_vector = requires (T t) {
+    t.count = std::size_t(0);
+    t.cap   = std::size_t(0);
+
+    (decltype(t.content)) nullptr;
+};
+# endif
+
+template<
+# if __cplusplus >= 202002L
+is_dc4c_vector
+# else
+typename
+# endif
+T>
+class vector {
+    T underlying;
+
+public:
+    using size_type = typename std::decay<decltype(underlying.count)>::type;
+    using value_type = typename std::decay<decltype(*underlying.content)>::type;
+
+    constexpr inline vector(): underlying(vector_initializer) {}
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(const vector& other) {
+        vector_copy(&underlying, &other.underlying);
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(vector&& other): underlying(other.underlying) {
+        vector_create(&other.underlying);
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(const T* cVector) {
+        vector_copy(&underlying, cVector);
+    }
+
+    constexpr inline vector(const T& cVector): vector(&cVector) {}
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(const std::vector<value_type>& other): underlying(vector_initializer) {
+        reserve(other.size());
+
+        for (const auto& element : other) {
+            push_back(element);
+        }
+    }
+
+    template<typename InputIt>
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(InputIt begin, InputIt end): underlying(vector_initializer) {
+        for (; begin != end; ++begin) {
+            push_back(*begin);
+        }
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX20 inline ~vector() {
+        vector_destroy(&underlying);
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(const vector& other) -> vector& {
+        vector_destroy(&underlying);
+        vector_copy(&underlying, &other.underlying);
+        return *this;
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(vector&& other) -> vector& {
+        vector_destroy(&underlying);
+        underlying = other.underlying;
+        vector_create(&other.underlying);
+        return *this;
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(const T* cVector) -> vector& {
+        vector_destroy(&underlying);
+        vector_copy(&underlying, cVector);
+        return *this;
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(const T& cVector) -> vector& {
+        return *this = &cVector;
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto data() -> T& {
+        return underlying;
+    }
+
+    constexpr inline auto data() const -> const T& {
+        return underlying;
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline operator std::vector<value_type>() const {
+        auto toReturn = std::vector<value_type>();
+        toReturn.reserve(size());
+        for (const auto& element : *this) {
+            toReturn.push_back(element);
+        }
+        return toReturn;
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline operator T*() {
+        return &underlying;
+    }
+
+    constexpr inline operator const T*() const {
+        return &underlying;
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator->() -> T* {
+        return *this;
+    }
+
+    constexpr inline auto operator->() const -> const T* {
+        return *this;
+    }
+
+    constexpr inline auto operator[](size_type position) const noexcept -> value_type& {
+        return underlying.content[position];
+    }
+
+    constexpr inline auto begin() const noexcept -> value_type* {
+        return underlying.content;
+    }
+
+    constexpr inline auto end() const noexcept -> value_type* {
+        return underlying.content + underlying.count;
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline void push_back(const value_type& value) {
+        if (!vector_push_back(&underlying, value)) {
+            throw std::bad_alloc();
+        }
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto pop_back() -> value_type {
+        return vector_pop_back(&underlying);
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto erase(size_type index) -> value_type {
+        return vector_erase(&underlying, index);
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline void insert(const value_type& value, size_type index) {
+        if (!vector_insert(&underlying, value, index)) {
+            throw std::bad_alloc();
+        }
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline void reserve(size_type newCap) {
+        if (!vector_reserve(&underlying, newCap)) {
+            throw std::bad_alloc();
+        }
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline void clear() {
+        vector_clear(&underlying);
+    }
+
+    constexpr inline auto size() const noexcept -> size_type {
+        return vector_size(&underlying);
+    }
+
+    constexpr inline auto capacity() const noexcept -> size_type {
+        return vector_capacity(&underlying);
+    }
+
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto getUnderlyingData() noexcept -> value_type* {
+        return underlying.content;
+    }
+
+    constexpr inline auto getUnderlyingData() const noexcept -> value_type* {
+        return underlying.content;
+    }
+
+    template<typename C = std::less<value_type>>
+    __DC4C_CONSTEXPR_SINCE_CXX20 inline void sort(const C& comp = C()) {
+        std::sort(begin(), end(), comp);
+    }
+};
+}
+
+#define vector_cxx_wrapper(name, actual) \
+namespace dc4c {                         \
+using vector_##name = vector<actual>;    \
+}
+
+# endif /* __DC4C_v2_vector_hpp */
+#endif /* !__DC4C_v2_vector_h */

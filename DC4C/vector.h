@@ -22,249 +22,223 @@
 #ifndef __DC4C_vector_h
 #define __DC4C_vector_h
 
-#if !__STDC_VERSION__ && !__cplusplus
- #error This library requires C99 or newer.
+// TODO: More version and compiler checks
+
+#if __STDC_VERSION__ < 202311L
+# include <stdbool.h>
 #endif
 
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef __cplusplus
- #include "vector.hpp"
-#endif
-
-#define vector_named(name, type)                                       \
-    struct vector_##name {                                             \
-        size_t count;                                                  \
-        size_t cap;                                                    \
-        type * content;                                                \
-                                                                       \
-        bool   (*push_back)     (struct vector_##name *, type);        \
-        type   (*pop_back)      (struct vector_##name *);              \
-        bool   (*insert)        (struct vector_##name *, type, size_t);\
-        type   (*erase)         (struct vector_##name *, size_t);      \
-        bool   (*reserve)       (struct vector_##name *, size_t);      \
-        void   (*clear)         (struct vector_##name *);              \
-        void   (*destroy)       (const struct vector_##name *);        \
-        void   (*destroyWith)   (const struct vector_##name*,          \
-                                 void (*)(type));                      \
-        void   (*destroyWithPtr)(const struct vector_##name*,          \
-                                 void (*)(type*));                     \
-        size_t (*size)          (const struct vector_##name *);        \
-        size_t (*capacity)      (const struct vector_##name *);        \
-        type * (*data)          (const struct vector_##name *);        \
-        void   (*sort)          (struct vector_##name*,                \
-                                 int (*)(type*, type*));               \
-        type*  (*search)        (struct vector_##name*, type*,         \
-                                 int (*)(type*, type*));               \
-    }
-
-#define vector_light_named(name, type) \
-    struct vector_##name {             \
-        size_t count;                  \
-        size_t cap;                    \
-        type * content;                \
-    }
-
-#define dc4c_vector(type)  vector_named(type, type)
-#define vector_light(type) vector_light_named(type, type)
-
-#define vector_methods_c(type, name)                                                                \
-static inline bool vector_##name##_reserve(struct vector_##name * v, size_t newSize) {              \
-    if (v->cap >= newSize) {                                                                        \
-        return true;                                                                                \
-    }                                                                                               \
-                                                                                                    \
-    type * tmp = (type *) realloc(v->content, sizeof(type) * newSize);                              \
-    if (tmp == NULL) {                                                                              \
-        return false;                                                                               \
-    }                                                                                               \
-                                                                                                    \
-    v->content = tmp;                                                                               \
-    v->cap     = newSize;                                                                           \
-                                                                                                    \
-    return true;                                                                                    \
-}                                                                                                   \
-                                                                                                    \
-static inline bool vector_##name##_push_back(struct vector_##name * v, type value) {                \
-    if (v->cap < v->count + 1) {                                                                    \
-        if (!vector_##name##_reserve(v, v->cap == 0 ? 1 : v->cap * 2)) {                            \
-            return false;                                                                           \
-        }                                                                                           \
-    }                                                                                               \
-                                                                                                    \
-    v->content[v->count++] = value;                                                                 \
-                                                                                                    \
-    return true;                                                                                    \
-}                                                                                                   \
-                                                                                                    \
-static inline type vector_##name##_pop_back(struct vector_##name * v) {                             \
-    type toReturn = v->content[v->count - 1];                                                       \
-    --v->count;                                                                                     \
-    return toReturn;                                                                                \
-}                                                                                                   \
-                                                                                                    \
-static inline bool vector_##name##_insert(struct vector_##name * v, type value, size_t position) {  \
-    if (position >= v->count) {                                                                     \
-        return vector_##name##_push_back(v, value);                                                 \
-    }                                                                                               \
-                                                                                                    \
-    if (v->cap < v->count + 1) {                                                                    \
-        if (!vector_##name##_reserve(v, v->cap * 2)) {                                              \
-            return false;                                                                           \
-        }                                                                                           \
-    }                                                                                               \
-    memmove(&v->content[position + 1], &v->content[position], (v->count - position) * sizeof(type));\
-    v->content[position] = value;                                                                   \
-    v->count++;                                                                                     \
-                                                                                                    \
-    return true;                                                                                    \
-}                                                                                                   \
-                                                                                                    \
-static inline type vector_##name##_erase(struct vector_##name * v, size_t position) {               \
-    type toReturn = v->content[position];                                                           \
-    memmove(&v->content[position],                                                                  \
-            &v->content[position + 1],                                                              \
-            (--v->count - position) * sizeof(type));                                                \
-    return toReturn;                                                                                \
-}                                                                                                   \
-                                                                                                    \
-static inline size_t vector_##name##_size(const struct vector_##name * v) {                         \
-    return v->count;                                                                                \
-}                                                                                                   \
-                                                                                                    \
-static inline size_t vector_##name##_capacity(const struct vector_##name * v) {                     \
-    return v->cap;                                                                                  \
-}                                                                                                   \
-                                                                                                    \
-static inline type * vector_##name##_data(const struct vector_##name * v) {                         \
-    return v->content;                                                                              \
-}                                                                                                   \
-                                                                                                    \
-static inline void vector_##name##_destroy(const struct vector_##name * v) {                        \
-    free(v->content);                                                                               \
-}                                                                                                   \
-                                                                                                    \
-static inline void vector_##name##_destroyWith(const struct vector_##name* me,                      \
-                                               void (*contentDestroy)(type)) {                      \
-    if (contentDestroy != NULL) {                                                                   \
-        for (size_t i = 0; i < me->count; ++i) {                                                    \
-            contentDestroy(me->content[i]);                                                         \
-        }                                                                                           \
-    }                                                                                               \
-    vector_##name##_destroy(me);                                                                    \
-}                                                                                                   \
-                                                                                                    \
-static inline void vector_##name##_destroyWithPtr(const struct vector_##name* me,                   \
-                                                  void (*contentDestroy)(type*)) {                  \
-    if (contentDestroy != NULL) {                                                                   \
-        vector_iterate(type, me, contentDestroy(element);)                                          \
-    }                                                                                               \
-    vector_##name##_destroy(me);                                                                    \
-}                                                                                                   \
-                                                                                                    \
-static inline void vector_##name##_clear(struct vector_##name * v) {                                \
-    v->count = 0;                                                                                   \
-}                                                                                                   \
-                                                                                                    \
-static inline void vector_##name##_copy(      struct vector_##name * lhs,                           \
-                                        const struct vector_##name * rhs) {                         \
-    *lhs = (struct vector_##name) vector_initializer;                                               \
-    vector_##name##_reserve(lhs, rhs->cap);                                                         \
-    memcpy(lhs->content, rhs->content, rhs->count * sizeof(type));                                  \
-    lhs->count = rhs->count;                                                                        \
-}                                                                                                   \
-                                                                                                    \
-static inline void vector_##name##_sort(struct vector_##name* self, int (*comp)(type*, type*)) {    \
-    if (self->count > 0) {                                                                          \
-        qsort(self->content, self->count, sizeof(type), (int (*)(const void*, const void*)) comp);  \
-    }                                                                                               \
-}                                                                                                   \
-                                                                                                    \
-static inline type* vector_##name##_search(struct vector_##name* self,                              \
-                                           type* key, int (*comp)(type*, type*)) {                  \
-    type* toReturn = NULL;                                                                          \
-    if (self->count > 0) {                                                                          \
-        toReturn = (type*) bsearch((const void*) key, (const void*) self->content, self->count,     \
-                                   sizeof(type), (int (*)(const void*, const void*)) comp);         \
-    }                                                                                               \
-    return toReturn;                                                                                \
+#define vector_named(name, type) \
+struct vector_##name {           \
+    size_t count;                \
+    size_t cap;                  \
+    type*  content;              \
 }
 
-#define vector_initer(name)                                     \
-static inline struct vector_##name vector_##name##_init(void) { \
-    struct vector_##name tmp;                                   \
-    vector_##name##_create(&tmp);                               \
-    return tmp;                                                 \
-}
-
-#define vector_create_named(name)                                    \
-static inline void vector_##name##_create(struct vector_##name * v) {\
-    v->count   = 0;                                                  \
-    v->cap     = 0;                                                  \
-    v->content = NULL;                                               \
-                                                                     \
-    v->push_back      = &vector_##name##_push_back;                  \
-    v->pop_back       = &vector_##name##_pop_back;                   \
-    v->insert         = &vector_##name##_insert;                     \
-    v->erase          = &vector_##name##_erase;                      \
-    v->size           = &vector_##name##_size;                       \
-    v->capacity       = &vector_##name##_capacity;                   \
-    v->data           = &vector_##name##_data;                       \
-    v->reserve        = &vector_##name##_reserve;                    \
-    v->destroy        = &vector_##name##_destroy;                    \
-    v->destroyWith    = &vector_##name##_destroyWith;                \
-    v->destroyWithPtr = &vector_##name##_destroyWithPtr;             \
-    v->clear          = &vector_##name##_clear;                      \
-    v->sort           = &vector_##name##_sort;                       \
-    v->search         = &vector_##name##_search;                     \
-}                                                                    \
-                                                                     \
-vector_initer(name)
-
-#define vector_light_create_named(name)                               \
-static inline void vector_##name##_create(struct vector_##name * v) { \
-    v->count = 0;                                                     \
-    v->cap   = 0;                                                     \
-    v->content = NULL;                                                \
-}                                                                     \
-                                                                      \
-vector_initer(name)
+#define dc4c_vector(type) vector_named(type, type)
 
 #ifdef __cplusplus
- #define vector_methods(type, name, create) vector_methods_c(type, name)   \
-                                            create(name)                   \
-                                            vector_methods_cxx(type, name)
+# define __DC4C_TYPEOF(expr) decltype(expr)
 #else
- #define vector_methods(type, name, create) vector_methods_c(type, name) \
-                                            create(name)
+# define __DC4C_TYPEOF(expr) typeof(expr)
 #endif
 
-#define typedef_vector_named(name, type) vector_named(name, type);                       \
-                                         vector_methods(type, name, vector_create_named) \
-                                         typedef struct vector_##name vector_##name##_t
+#define vector_reserve(vectorPtr, newSize) ({                                 \
+    bool result = false;                                                      \
+    do {                                                                      \
+        __DC4C_TYPEOF((vectorPtr)) __v_vr = (vectorPtr);                      \
+        size_t __s_vr = (size_t) (newSize);                                   \
+                                                                              \
+        if (__v_vr->cap >= __s_vr) {                                          \
+            break;                                                            \
+        }                                                                     \
+                                                                              \
+        __DC4C_TYPEOF(__v_vr->content) tmp = (__DC4C_TYPEOF(__v_vr->content)) \
+            realloc(__v_vr->content, sizeof(*__v_vr->content) * __s_vr);      \
+        if (tmp == NULL) {                                                    \
+            break;                                                            \
+        }                                                                     \
+                                                                              \
+        __v_vr->content = tmp;                                                \
+        __v_vr->cap     = __s_vr;                                             \
+        result = true;                                                        \
+    } while (0);                                                              \
+    result;                                                                   \
+})
 
-#define typedef_vector(type) typedef_vector_named(type, type)
+#define vector_push_back(vectorPtr, value) ({                                         \
+    bool result = false;                                                              \
+    do {                                                                              \
+        __DC4C_TYPEOF((vectorPtr)) __v_vpb  = (vectorPtr);                            \
+        __DC4C_TYPEOF((value))     __vl_vpb = (value);                                \
+                                                                                      \
+        if (__v_vpb->cap < __v_vpb->count + 1) {                                      \
+            if (!vector_reserve(__v_vpb, __v_vpb->cap == 0 ? 1 : __v_vpb->cap * 2)) { \
+                break;                                                                \
+            }                                                                         \
+        }                                                                             \
+                                                                                      \
+        __v_vpb->content[__v_vpb->count++] = __vl_vpb;                                \
+        result = true;                                                                \
+    } while (0);                                                                      \
+    result;                                                                           \
+})
 
-#define typedef_vector_light_named(name, type) vector_light_named(name, type);                       \
-                                               vector_methods(type, name, vector_light_create_named) \
-                                               typedef struct vector_##name vector_##name##_t
+#define vector_pop_back(vectorPtr) ({                                                       \
+    __DC4C_TYPEOF((vectorPtr)) __v_vpopb = (vectorPtr);                                     \
+    __DC4C_TYPEOF(*__v_vpopb->content) toReturn = __v_vpopb->content[__v_vpopb->count - 1]; \
+    --__v_vpopb->count;                                                                     \
+    toReturn;                                                                               \
+})
 
-#define typedef_vector_light(type) typedef_vector_light_named(type, type)
+#define vector_clear(vectorPtr) \
+do {                            \
+    (vectorPtr)->count = 0;     \
+} while (0)
 
-#define vector_iterate(type, vectorPtr, block)    \
-for (size_t i = 0; i < (vectorPtr)->count; ++i) { \
-    type* element = &(vectorPtr)->content[i];     \
-    { block }                                     \
-}
+#define vector_insert(vectorPtr, value, position) ({                  \
+    bool result = false;                                              \
+    do {                                                              \
+        __DC4C_TYPEOF((vectorPtr)) __v_vi  = (vectorPtr);             \
+        __DC4C_TYPEOF((value))     __vl_vi = (value);                 \
+        __DC4C_TYPEOF((position))  __p_vi  = (position);              \
+                                                                      \
+        if (__p_vi >= __v_vi->count) {                                \
+            result = vector_push_back(__v_vi, __vl_vi);               \
+            break;                                                    \
+        }                                                             \
+                                                                      \
+        if (__v_vi->cap < __v_vi->count + 1) {                        \
+            if (!vector_reserve(__v_vi, __v_vi->cap * 2)) {           \
+                break;                                                \
+            }                                                         \
+        }                                                             \
+        memmove(&__v_vi->content[__p_vi + 1],                         \
+                &__v_vi->content[__p_vi],                             \
+                (__v_vi->count - __p_vi) * sizeof(*__v_vi->content)); \
+        __v_vi->content[__p_vi] = __vl_vi;                            \
+        ++__v_vi->count;                                              \
+        result = true;                                                \
+    } while (0);                                                      \
+    result;                                                           \
+})
 
-#define vector_forEach(type, vectorPtr, varname, block) \
-for (size_t i = 0; i < (vectorPtr)->count; ++i) {       \
-    type* (varname) = &(vectorPtr)->content[i];         \
-    { block }                                           \
-}
+#define vector_erase(vectorPtr, position) ({                            \
+    __DC4C_TYPEOF((vectorPtr)) __v_ve = (vectorPtr);                    \
+    __DC4C_TYPEOF((position)) __p_ve = (position);                      \
+                                                                        \
+    __DC4C_TYPEOF(*__v_ve->content) toReturn = __v_ve->content[__p_ve]; \
+    do {                                                                \
+        memmove(&__v_ve->content[__p_ve],                               \
+                &__v_ve->content[__p_ve + 1],                           \
+                (--__v_ve->count - __p_ve) * sizeof(*__v_ve->content)); \
+    } while (0);                                                        \
+    toReturn;                                                           \
+})
+
+#define vector_forEach(vectorPtr, varname, block)                              \
+do {                                                                           \
+    __DC4C_TYPEOF((vectorPtr)) __v_vfe = (vectorPtr);                          \
+    for (size_t __dc4c_i = 0; __dc4c_i < __v_vfe->count; ++__dc4c_i) {         \
+        __DC4C_TYPEOF(__v_vfe->content) varname = &__v_vfe->content[__dc4c_i]; \
+        { block }                                                              \
+    }                                                                          \
+} while (0)
+
+#define vector_size(vectorPtr) ({ (vectorPtr)->count; })
+
+#define vector_capacity(vectorPtr) ({ (vectorPtr)->cap; })
+
+#define vector_data(vectorPtr) ({ (vectorPtr)->content; })
+
+#define vector_iterate(vectorPtr, block) vector_forEach(vectorPtr, element, block)
+
+#define vector_sort(vectorPtr, comp)                       \
+do {                                                       \
+    __DC4C_TYPEOF((vectorPtr)) __v_vs = (vectorPtr);       \
+    if (__v_vs->count > 0) {                               \
+        qsort(__v_vs->content,                             \
+              __v_vs->count,                               \
+              sizeof(*__v_vs->content),                    \
+              (int (*)(const void*, const void*)) (comp)); \
+    }                                                      \
+} while (0)
+
+#define vector_search(vectorPtr, keyPtr, comp) ({                 \
+    __DC4C_TYPEOF((vectorPtr)) __v_vse = (vectorPtr);             \
+                                                                  \
+    __DC4C_TYPEOF(__v_vse->content) toReturn = NULL;              \
+    if (__v_vse->count > 0) {                                     \
+        toReturn = (__DC4C_TYPEOF(__v_vse->content)) bsearch(     \
+                       (const void*) (keyPtr),                    \
+                       (const void*) __v_vse->content,            \
+                       __v_vse->count,                            \
+                       sizeof(*__v_vse->content),                 \
+                       (int (*)(const void*, const void*)) (comp) \
+                   );                                             \
+    }                                                             \
+    toReturn;                                                     \
+})
+
+#define vector_destroy(vectorPtr) \
+do {                              \
+    free((vectorPtr)->content);   \
+} while (0)
+
+#define vector_destroyWith(vectorPtr, valueFunc)      \
+do {                                                  \
+    __DC4C_TYPEOF((vectorPtr)) __v_vdw = (vectorPtr); \
+                                                      \
+    vector_iterate(__v_vdw, valueFunc(*element););    \
+    vector_destroy(__v_vdw);                          \
+} while (0)
+
+#define vector_destroyWithPtr(vectorPtr, ptrFunc)      \
+do {                                                   \
+    __DC4C_TYPEOF((vectorPtr)) __v_vdwp = (vectorPtr); \
+                                                       \
+    vector_iterate(__v_vdwp, ptrFunc(element););       \
+    vector_destroy(__v_vdwp);                          \
+} while (0)
+
+#define vector_init(vectorPtr)                        \
+do {                                                  \
+    __DC4C_TYPEOF((vectorPtr)) __v_vin = (vectorPtr); \
+                                                      \
+    __v_vin->cap     = 0;                             \
+    __v_vin->count   = 0;                             \
+    __v_vin->content = NULL;                          \
+} while (0)
 
 #define vector_initializer { 0, 0, NULL }
 
-#endif /* __DC4C_vector_h */
+#define vector_copy(lhsPtr, rhsPtr)                                \
+do {                                                               \
+    __DC4C_TYPEOF((lhsPtr)) __v_l_vc = (lhsPtr);                   \
+    __DC4C_TYPEOF((rhsPtr)) __v_r_vc = (rhsPtr);                   \
+                                                                   \
+    vector_init(__v_l_vc);                                         \
+    vector_reserve(__v_l_vc, __v_r_vc->cap);                       \
+    memcpy(__v_l_vc->content, __v_r_vc->content, __v_r_vc->count); \
+    __v_l_vc->count = __v_r_vc->count;                             \
+} while (0)
+
+#ifdef __cplusplus
+# include "vector.hpp"
+#endif
+
+#ifndef vector_cxx_wrapper
+# define vector_cxx_wrapper(name, actual)
+#endif
+
+#define typedef_vector_named(name, type)       \
+vector_named(name, type);                      \
+vector_cxx_wrapper(name, vector_##name);       \
+typedef struct vector_##name vector_##name##_t
+
+#define typedef_vector(type) typedef_vector_named(type, type)
+
+#endif /* __DC4C_v2_vector_h */
