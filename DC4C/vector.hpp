@@ -77,7 +77,7 @@ public:
         vector_copy(&underlying, &other.underlying);
     }
 
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(vector&& other): underlying(other.underlying) {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(vector&& other) noexcept: underlying(other.underlying) {
         vector_create(&other.underlying);
     }
 
@@ -112,7 +112,7 @@ public:
         return *this;
     }
 
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(vector&& other) -> vector& {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(vector&& other) noexcept -> vector& {
         vector_destroy(&underlying);
         underlying = other.underlying;
         vector_create(&other.underlying);
