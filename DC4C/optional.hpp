@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Written in 2023 - 2024 by mhahnFr
+ * Written in 2023 - 2025 by mhahnFr
  *
  * This file is part of DC4C.
  *
@@ -22,7 +22,13 @@
  
  #if __cplusplus >= 201703L
   #include <optional>
-  
+
+  /**
+   * Defines the C++ helper functions into the namespace @c dc4c .
+   *
+   * @param type the contained type
+   * @param name the name of the C optional
+   */
   #define __dc4c_optional_methods_cxx(type, name)                                                  \
   namespace dc4c {                                                                                 \
   constexpr static inline auto to_cpp(const dc4c::optional_##name & self) -> std::optional<type> { \
@@ -45,9 +51,12 @@
  #else
   #define __dc4c_optional_methods_cxx(type, name)
  #endif
- 
+
+ /** The namespace begin.  */
  #define __dc4c_optional_namespace_begin namespace dc4c {
+ /** The namespace end.    */
  #define __dc4c_optional_namespace_end   }
+ /** The namespace prefix. */
  #define __dc4c_optional_namespace_name  dc4c::
 
  #endif /* __DC4C_optional_hpp */

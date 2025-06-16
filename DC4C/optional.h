@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Written in 2023 - 2024 by mhahnFr
+ * Written in 2023 - 2025 by mhahnFr
  *
  * This file is part of DC4C.
  *
@@ -27,7 +27,13 @@
  #define __dc4c_optional_methods_cxx(type, name)
 #endif
 
-#define optional_named(name, type)  \
+/**
+ * Defines the optional structure.
+ *
+ * @param name the name of the optional
+ * @param type the contained type
+ */
+#define __dc4c_optional_named(name, type)  \
     __dc4c_optional_namespace_begin \
         struct optional_##name {    \
             bool has_value;         \
@@ -35,16 +41,37 @@
         };                          \
     __dc4c_optional_namespace_end
 
-#define dc4c_optional(type) optional_named(type, type)
-
+/**
+ * Defines the helper functions for the optional.
+ *
+ * @param type the contained type
+ * @param name the name of the optional
+ */
 #define __dc4c_optional_methods(type, name) \
 __dc4c_optional_methods_cxx(type, name)
 
+/**
+ * @brief Defines an optional containing the given type.
+ *
+ * The helper functions are defined here as well. If compiled with C++17 or
+ * newer, the C++ helper functions are also defined here.
+ *
+ * @param name the name of the optional
+ * @param type the contained type
+ */
 #define typedef_optional_named(name, type) \
-optional_named(name, type)                 \
+__dc4c_optional_named(name, type)          \
 __dc4c_optional_methods(type, name)        \
 typedef struct __dc4c_optional_namespace_name optional_##name optional_##name##_t
 
+/**
+ * @brief Defines an optional containing the given type.
+ *
+ * The helper functions are defined here as well. If compiled with C++17 or
+ * newer, the C++ helper functions are also defined here.
+ *
+ * @param type the type the optional should contain
+ */
 #define typedef_optional(type) typedef_optional_named(type, type)
 
 #endif /* __DC4C_optional_h */
