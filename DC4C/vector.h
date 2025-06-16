@@ -235,4 +235,4 @@ typedef struct vector_##name vector_##name##_t
 
 #define typedef_vector(type) typedef_vector_named(type, type)
 
-#endif /* __DC4C_v2_vector_h */
+#endif /* __DC4C_vector_h */

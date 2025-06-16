@@ -17,12 +17,12 @@
 # error This library requires C++11 or newer.
 #endif
 
-#ifndef __DC4C_v2_vector_h
+#ifndef __DC4C_vector_h
 # warning Wrong inclusion of "vector.hpp" redirected to #include "vector.h"!
 # include "vector.h"
 #else
-# ifndef __DC4C_v2_vector_hpp
-# define __DC4C_v2_vector_hpp
+# ifndef __DC4C_vector_hpp
+# define __DC4C_vector_hpp
 
 # if __cplusplus >= 201402L
 #  define __DC4C_CONSTEXPR_SINCE_CXX14 constexpr
@@ -232,5 +232,5 @@ namespace dc4c {                         \
 using vector_##name = vector<actual>;    \
 }
 
-# endif /* __DC4C_v2_vector_hpp */
-#endif /* !__DC4C_v2_vector_h */
+# endif /* __DC4C_vector_hpp */
+#endif /* !__DC4C_vector_h */
