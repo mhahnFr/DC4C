@@ -45,6 +45,7 @@ struct vector_##name {                  \
         size_t __s_vr = (size_t) (newSize);                                        \
                                                                                    \
         if (__v_vr->cap >= __s_vr) {                                               \
+            __vr_result = true;                                                    \
             break;                                                                 \
         }                                                                          \
                                                                                    \
@@ -101,6 +102,8 @@ do {                            \
         if (__p_vi >= __v_vi->count) {                                \
             __vi_result = vector_push_back(__v_vi, __vl_vi);          \
             break;                                                    \
+        } else if (__p_vi < 0) {                                      \
+            __p_vi = 0;                                               \
         }                                                             \
                                                                       \
         if (__v_vi->cap < __v_vi->count + 1) {                        \
@@ -123,11 +126,9 @@ do {                            \
     __DC4C_TYPEOF((position)) __p_ve = (position);                           \
                                                                              \
     __DC4C_TYPEOF(*__v_ve->content) __ve_toReturn = __v_ve->content[__p_ve]; \
-    do {                                                                     \
-        memmove(&__v_ve->content[__p_ve],                                    \
-                &__v_ve->content[__p_ve + 1],                                \
-                (--__v_ve->count - __p_ve) * sizeof(*__v_ve->content));      \
-    } while (0);                                                             \
+    memmove(&__v_ve->content[__p_ve],                                        \
+            &__v_ve->content[__p_ve + 1],                                    \
+            (--__v_ve->count - __p_ve) * sizeof(*__v_ve->content));          \
     __ve_toReturn;                                                           \
 })
 
