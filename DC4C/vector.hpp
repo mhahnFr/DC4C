@@ -78,7 +78,7 @@ public:
     }
 
     __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(vector&& other) noexcept: underlying(other.underlying) {
-        vector_create(&other.underlying);
+        vector_init(&other.underlying);
     }
 
     __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(const T* cVector) {
