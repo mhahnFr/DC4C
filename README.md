@@ -1,9 +1,10 @@
 # DC4C - *D*ata *C*ontainers *for C*
-This project aims to add some standard data containers to the C programming language. All of them are compatible
-with the C++ programming language and allow a seamless interaction between the two programming languages.
+This project aims to add some standard data containers to the C programming language. All of them are compatible with
+the C++ programming language and allow a seamless interaction between the two programming languages.
 
 ## Vector
-The implementation of the vector has been inspired by the standard vector of the C++ programming language ([`std::vector`][2]).
+The implementation of the vector has been inspired by the standard vector of the C++ programming language
+([`std::vector`][2]).
 
 ### C usage
 To use it, simply include its header [`vector.h`][3] and use the macros defined within.  
@@ -46,8 +47,9 @@ int main(void) {
 ```
 
 #### Standard conformance
-The C implementation conforms to the C99 standard except for the usage of expression statements, [which are a GNU extension][5]
-and the usage of the `typeof` operator, which is part of the C23 standard or available as [GNU extension][6].
+The C implementation conforms to the C99 standard except for the usage of expression statements, [which are a GNU
+extension][5] and the usage of the `typeof` operator, which is part of the C23 standard or available as [GNU
+extension][6].
 
 ### C++ usage
 If used within C++ code, the [wrapper class][4] is automatically available.  
@@ -96,7 +98,8 @@ int main() {
 The C++ wrapper class conforms to the C++11 standard.
 
 ## Pair
-The implementation of the pair has been inspired by the standard pair of the C++ programming language ([`std::pair`][7]).
+The implementation of the pair has been inspired by the standard pair of the C++ programming language
+([`std::pair`][7]).
 
 ### C usage
 To use it, simply include its header [`pair.h`][8] and use the functions created by the macros defined within.  
@@ -153,7 +156,8 @@ int main() {
 The C++ interoperability adheres to the C++98 standard.
 
 ## Optional
-The implementation of the optional has been inspired by the standard optional of the C++ programming language ([`std::optional`][9]).
+The implementation of the optional has been inspired by the standard optional of the C++ programming language
+([`std::optional`][9]).
 
 ### C usage
 To use it, simply include its header [`optional.h`][10] and use the functions created by the macros defined within.  
