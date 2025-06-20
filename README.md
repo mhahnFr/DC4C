@@ -95,6 +95,63 @@ int main() {
 #### Standard conformance
 The C++ wrapper class conforms to the C++11 standard.
 
+## Pair
+The implementation of the pair has been inspired by the standard pair of the C++ programming language ([`std::pair`][7]).
+
+### C usage
+To use it, simply include its header [`pair.h`][8] and use the functions created by the macros defined within.  
+**Example** usage:
+```c
+// main.c
+
+#include <pair.h>
+
+typedef_pair(int, char);
+typedef_pair_named(/* name:  */ int_string, 
+                   /* type1: */ int,
+                   /* type2: */ const char*);
+
+int main(void) {
+    pair_int_char_t pairIntChar = { .first = 1, .second = 'A' };
+    
+    pairIntChar = make_pair_int_char(2, 'B');
+    
+    pair_int_string_t pairIntString = { .first = 4, .second = "DC4C" };
+    
+    pairIntString = make_pair_int_string(11, "Hello World");
+}
+```
+
+#### Standard conformance
+The C implementation adheres to the C90 standard.
+
+### C++ usage
+When compiled within C++ code, additional interoperability functions are available, as demonstrated below:
+```c++
+// main.cpp
+
+#include <pair.h>
+
+typedef_pair(int, char);
+typedef_pair_named(int_string, int, const char*);
+
+int main() {
+    pair_int_char_t pairIntChar = { 1, 'A' };
+    
+    std::pair<int, char> cppPairIntChar = dc4c::to_cpp(pairIntChar);
+    
+    
+    pair_int_string_t pairIntString = make_pair_int_string(4, "DC4C");
+    
+    std::pair<int, const char*> cppPair = std::make_pair(11, "Hello World");
+    
+    pairIntString = dc4c::to_dc4c(cppPair);
+}
+```
+
+#### Standard conformance
+The C++ interoperability adheres to the C++98 standard.
+
 ---
 # Welcome to _DC4C_!
 This repository contains a few data containers written in and for the C programming language.
@@ -109,9 +166,6 @@ make sure to include these headers before any `extern "C"` block.
 
 ### Optional
 An optional similar to the `std::optional` of the C++17 standard library is available.
-
-### Pair
-A pair similar to the `std::pair` of the C++ standard library is available.
 
 ## Standard compliance
 All containers are compatible with the C90 and C++98 standards, respectively, unless noted otherwise.
@@ -135,3 +189,5 @@ Written in 2023 - 2025 by [mhahnFr][1]
 [4]: DC4C/vector.hpp
 [5]: https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html
 [6]: https://gcc.gnu.org/onlinedocs/gcc/Typeof.html
+[7]: https://en.cppreference.com/w/cpp/utility/pair.html
+[8]: DC4C/pair.h
