@@ -5,6 +5,7 @@ with the C++ programming language and allow a seamless interaction between the t
 ## Vector
 The implementation of the vector has been inspired by the standard vector of the C++ programming language ([`std::vector`][2]).
 
+### C usage
 To use it, simply include its header [`vector.h`][3] and use the macros defined within.  
 **Example** usage:
 ```c
@@ -44,6 +45,11 @@ int main(void) {
 }
 ```
 
+#### Standard conformance
+The C implementation conforms to the C99 standard except for the usage of expression statements, [which are a GNU extension][5]
+and the usage of the `typeof` operator, which is part of the C23 standard or available as [GNU extension][6].
+
+### C++ usage
 If used within C++ code, the [wrapper class][4] is automatically available.  
 **Example** usage:
 ```c++
@@ -86,6 +92,9 @@ int main() {
 }
 ```
 
+#### Standard conformance
+The C++ wrapper class conforms to the C++11 standard.
+
 ---
 # Welcome to _DC4C_!
 This repository contains a few data containers written in and for the C programming language.
@@ -124,3 +133,5 @@ Written in 2023 - 2025 by [mhahnFr][1]
 [2]: https://en.cppreference.com/w/cpp/container/vector.html
 [3]: DC4C/vector.h
 [4]: DC4C/vector.hpp
+[5]: https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html
+[6]: https://gcc.gnu.org/onlinedocs/gcc/Typeof.html
