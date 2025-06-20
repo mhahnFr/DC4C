@@ -50,10 +50,10 @@ namespace dc4c {
 # if __cplusplus >= 202002L
 template<typename T>
 concept is_dc4c_vector = requires (T t) {
-    t.count = std::size_t(0);
-    t.cap   = std::size_t(0);
+    t.count = static_cast<std::size_t>(0);
+    t.cap   = static_cast<std::size_t>(0);
 
-    (decltype(t.content)) nullptr;
+    static_cast<decltype(t.content)>(nullptr);
 };
 # endif
 
