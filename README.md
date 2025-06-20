@@ -152,31 +152,59 @@ int main() {
 #### Standard conformance
 The C++ interoperability adheres to the C++98 standard.
 
----
-# Welcome to _DC4C_!
-This repository contains a few data containers written in and for the C programming language.
+## Optional
+The implementation of the optional has been inspired by the standard optional of the C++ programming language ([`std::optional`][9]).
 
-The name stands for **D**ata **C**ontainers **for** **C**.
+### C usage
+To use it, simply include its header [`optional.h`][10] and use the functions created by the macros defined within.  
+**Example** usage:
+```c
+// main.c
 
-## Containers
-All the implemented containers come with functions to simplify the interoperability with C++ code.
+#include <optional.h>
 
-In order for the function overload resolutions to work when using this library in C++ code,
-make sure to include these headers before any `extern "C"` block.
+#include <stdio.h> // For printf(...)
 
-### Optional
-An optional similar to the `std::optional` of the C++17 standard library is available.
+typedef_optional(int);
+typedef_optional_named(/* name: */ string,
+                       /* type: */ const char*);
 
-## Standard compliance
-All containers are compatible with the C90 and C++98 standards, respectively, unless noted otherwise.
+int main(void) {
+    optional_int_t optInt = { .has_value = false };
 
-### Vector
-The C implementation requires the C99 standard, the C++ implementation the C++11 standard.
+    optional_string_t optStr = { .has_value = true, .value = "DC4C" };
+    if (optStr.has_value) {
+        printf("%s\n", optStr.value);
+    }
+}
+```
 
-### Optional
-The interoperability with C++17's `std::optional` is only available when compiled with the C++17 (or newer) standard.
+#### Standard conformance
+The C implementation conforms to the C90 standard.
 
----
+### C++ usage
+When compiled within C++ code, additional interoperability functions are available, as shown below:
+```c++
+// main.cpp
+
+#include <optional.h>
+
+typedef_optional(int);
+typedef_optional_named(string, const char*);
+
+int main() {
+    optional_int_t optInt = { true, 123 };
+
+    std::optional<int> cppOptInt = dc4c::to_cpp(optInt);
+
+    std::optional<const char*> cppOptStr = std::make_optional("DC4C");
+
+    optional_string_t optStr = dc4c::to_dc4c(cppOptStr);
+}
+```
+
+#### Standard conformance
+The C++ interoperability adheres to the C++17 standard.
 
 ## Final notes
 This project is marked with CC0 1.0 Universal.
@@ -191,3 +219,5 @@ Written in 2023 - 2025 by [mhahnFr][1]
 [6]: https://gcc.gnu.org/onlinedocs/gcc/Typeof.html
 [7]: https://en.cppreference.com/w/cpp/utility/pair.html
 [8]: DC4C/pair.h
+[9]: https://en.cppreference.com/w/cpp/utility/optional.html
+[10]: DC4C/optional.h
