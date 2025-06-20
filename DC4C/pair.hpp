@@ -29,15 +29,15 @@
   * @param type2 the second contained type
   * @param name the name of the pair
   */
- #define __dc4c_pair_methods_cxx(type1, type2, name)                                    \
- namespace dc4c {                                                                       \
- static inline auto to_cpp(const dc4c::pair_##name & self) -> std::pair<type1, type2> { \
-     return std::make_pair(self.first, self.second);                                    \
- }                                                                                      \
-                                                                                        \
- static inline auto to_dc4c(const std::pair<type1, type2> & p) -> dc4c::pair_##name {   \
-     return make_pair_##name(p.first, p.second);                                        \
- }                                                                                      \
+ #define __dc4c_pair_methods_cxx(type1, type2, name)                            \
+ namespace dc4c {                                                               \
+ static inline std::pair<type1, type2> to_cpp(const dc4c::pair_##name & self) { \
+     return std::make_pair(self.first, self.second);                            \
+ }                                                                              \
+                                                                                \
+ static inline dc4c::pair_##name to_dc4c(const std::pair<type1, type2> & p) {   \
+     return make_pair_##name(p.first, p.second);                                \
+ }                                                                              \
  }
 
  /** The beginning of the namespace. */
