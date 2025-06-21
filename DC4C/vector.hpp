@@ -145,7 +145,7 @@ public:
     __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(vector&& other) noexcept -> vector& {
         vector_destroy(&underlying);
         underlying = other.underlying;
-        vector_create(&other.underlying);
+        vector_init(&other.underlying);
         return *this;
     }
 
