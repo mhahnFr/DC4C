@@ -110,7 +110,7 @@ public:
      *
      * @param other the C++ standard vector to be copied
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(const std::vector<value_type>& other): underlying(vector_initializer) {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline explicit vector(const std::vector<value_type>& other): underlying(vector_initializer) {
         reserve(other.size());
 
         for (const auto& element : other) {
@@ -191,7 +191,7 @@ public:
         return underlying;
     }
 
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline operator std::vector<value_type>() const {
+    __DC4C_CONSTEXPR_SINCE_CXX14 inline explicit operator std::vector<value_type>() const {
         auto toReturn = std::vector<value_type>();
         toReturn.reserve(size());
         for (const auto& element : *this) {
