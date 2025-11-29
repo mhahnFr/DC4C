@@ -13,16 +13,16 @@
  * see the file LICENSE. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#if __cplusplus < 201103L
-# error This library requires C++11 or newer.
-#endif
-
 #ifndef __DC4C_vector_h
 # warning Wrong inclusion of "vector.hpp" redirected to #include "vector.h"!
 # include "vector.h"
 #else
 # ifndef __DC4C_vector_hpp
 # define __DC4C_vector_hpp
+
+#if __cplusplus < 201103L
+# error The C++ wrapper of the DC4C vector requires C++11 or newer.
+#endif
 
 # if __cplusplus >= 201402L
 #  define __DC4C_CONSTEXPR_SINCE_CXX14 constexpr
@@ -323,7 +323,7 @@ public:
     }
 
     /**
-     * Returns the amounf of objects this vector is currently capable to hold.
+     * Returns the amount of objects this vector is currently capable to hold.
      *
      * @return the amount of objects this vector currently can hold
      */
