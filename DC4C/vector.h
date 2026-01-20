@@ -372,8 +372,8 @@ do {                                                               \
 # include "vector.hpp"
 #endif
 
-#ifndef __dc4c_vector_cxx_wrapper
-# define __dc4c_vector_cxx_wrapper(name, actual)
+#ifndef _dc4c_vector_cxx_wrapper
+# define _dc4c_vector_cxx_wrapper(name, actual)
 #endif
 
 /**
@@ -383,8 +383,8 @@ do {                                                               \
  * @param type the contained type
  */
 #define typedef_vector_named(name, type)        \
-__dc4c_vector_cxx_wrapper(name, vector_##name); \
 _dc4c_vector_named(name, type);                \
+_dc4c_vector_cxx_wrapper(name, vector_##name); \
 typedef struct vector_##name vector_##name##_t
 
 /**

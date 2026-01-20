@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Written in 2023 - 2025 by mhahnFr
+ * Written in 2023 - 2026 by mhahnFr
  *
  * This file is part of DC4C.
  *
@@ -13,33 +13,33 @@
  * see the file LICENSE. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#ifndef __DC4C_vector_h
+#ifndef _dc4c_vector_h
 # warning Wrong inclusion of "vector.hpp" redirected to #include "vector.h"!
 # include "vector.h"
 #else
-# ifndef __DC4C_vector_hpp
-# define __DC4C_vector_hpp
+# ifndef _dc4c_vector_hpp
+# define _dc4c_vector_hpp
 
 #if __cplusplus < 201103L
 # error The C++ wrapper of the DC4C vector requires C++11 or newer.
 #endif
 
 # if __cplusplus >= 201402L
-#  define __DC4C_CONSTEXPR_SINCE_CXX14 constexpr
+#  define _dc4c_constexpr_since_cxx14 constexpr
 # else
-#  define __DC4C_CONSTEXPR_SINCE_CXX14
+#  define _dc4c_constexpr_since_cxx14
 # endif
 
 # if __cplusplus >= 201703L
-#  define __DC4C_CONSTEXPR_SINCE_CXX17 constexpr
+#  define _dc4c_constexpr_since_cxx17 constexpr
 # else
-#  define __DC4C_CONSTEXPR_SINCE_CXX17
+#  define _dc4c_constexpr_since_cxx17
 # endif
 
 # if __cplusplus >= 202002L
-#  define __DC4C_CONSTEXPR_SINCE_CXX20 constexpr
+#  define _dc4c_constexpr_since_cxx20 constexpr
 # else
-#  define __DC4C_CONSTEXPR_SINCE_CXX20
+#  define _dc4c_constexpr_since_cxx20
 # endif
 
 # include <algorithm>
@@ -81,11 +81,11 @@ public:
 
     constexpr inline vector(): underlying(vector_initializer) {}
 
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(const vector& other) {
+    _dc4c_constexpr_since_cxx14 inline vector(const vector& other) {
         vector_copy(&underlying, &other.underlying);
     }
 
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(vector&& other) noexcept: underlying(other.underlying) {
+    _dc4c_constexpr_since_cxx14 inline vector(vector&& other) noexcept: underlying(other.underlying) {
         vector_init(&other.underlying);
     }
 
@@ -94,7 +94,7 @@ public:
      *
      * @param cVector the C vector to be copied into this wrapper
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(const T* cVector) {
+    _dc4c_constexpr_since_cxx14 inline vector(const T* cVector) {
         vector_copy(&underlying, cVector);
     }
 
@@ -110,7 +110,7 @@ public:
      *
      * @param other the C++ standard vector to be copied
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline explicit vector(const std::vector<value_type>& other): underlying(vector_initializer) {
+    _dc4c_constexpr_since_cxx14 inline explicit vector(const std::vector<value_type>& other): underlying(vector_initializer) {
         reserve(other.size());
 
         for (const auto& element : other) {
@@ -126,23 +126,23 @@ public:
      * @param end the past the end iterator of the range to be copied
      */
     template<typename InputIt>
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline vector(InputIt begin, InputIt end): underlying(vector_initializer) {
+    _dc4c_constexpr_since_cxx14 inline vector(InputIt begin, InputIt end): underlying(vector_initializer) {
         for (; begin != end; ++begin) {
             push_back(*begin);
         }
     }
 
-    __DC4C_CONSTEXPR_SINCE_CXX20 inline ~vector() {
+    _dc4c_constexpr_since_cxx20 inline ~vector() {
         vector_destroy(&underlying);
     }
 
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(const vector& other) -> vector& {
+    _dc4c_constexpr_since_cxx14 inline auto operator=(const vector& other) -> vector& {
         vector_destroy(&underlying);
         vector_copy(&underlying, &other.underlying);
         return *this;
     }
 
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(vector&& other) noexcept -> vector& {
+    _dc4c_constexpr_since_cxx14 inline auto operator=(vector&& other) noexcept -> vector& {
         vector_destroy(&underlying);
         underlying = other.underlying;
         vector_init(&other.underlying);
@@ -155,7 +155,7 @@ public:
      * @param cVector the C vector to be copied
      * @return @c *this
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(const T* cVector) -> vector& {
+    _dc4c_constexpr_since_cxx14 inline auto operator=(const T* cVector) -> vector& {
         vector_destroy(&underlying);
         vector_copy(&underlying, cVector);
         return *this;
@@ -167,7 +167,7 @@ public:
      * @param cVector the C vector to be copied
      * @return @c *this
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator=(const T& cVector) -> vector& {
+    _dc4c_constexpr_since_cxx14 inline auto operator=(const T& cVector) -> vector& {
         return *this = &cVector;
     }
 
@@ -178,7 +178,7 @@ public:
      *
      * @return the underlying C vector
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto data() -> T& {
+    _dc4c_constexpr_since_cxx14 inline auto data() -> T& {
         return underlying;
     }
 
@@ -191,7 +191,7 @@ public:
         return underlying;
     }
 
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline explicit operator std::vector<value_type>() const {
+    _dc4c_constexpr_since_cxx14 inline explicit operator std::vector<value_type>() const {
         auto toReturn = std::vector<value_type>();
         toReturn.reserve(size());
         for (const auto& element : *this) {
@@ -200,7 +200,7 @@ public:
         return toReturn;
     }
 
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline operator T*() {
+    _dc4c_constexpr_since_cxx14 inline operator T*() {
         return &underlying;
     }
 
@@ -208,7 +208,7 @@ public:
         return &underlying;
     }
 
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto operator->() -> T* {
+    _dc4c_constexpr_since_cxx14 inline auto operator->() -> T* {
         return *this;
     }
 
@@ -252,7 +252,7 @@ public:
      * @param value the value to be stored
      * @throw std::bad_alloc if the memory allocation failed
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline void push_back(const value_type& value) {
+    _dc4c_constexpr_since_cxx14 inline void push_back(const value_type& value) {
         if (!vector_push_back(&underlying, value)) {
             throw std::bad_alloc();
         }
@@ -263,7 +263,7 @@ public:
      *
      * @return the removed element
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto pop_back() -> value_type {
+    _dc4c_constexpr_since_cxx14 inline auto pop_back() -> value_type {
         return vector_pop_back(&underlying);
     }
 
@@ -275,7 +275,7 @@ public:
      * @param index the index of the element to be erased
      * @return the erased element
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto erase(size_type index) -> value_type {
+    _dc4c_constexpr_since_cxx14 inline auto erase(size_type index) -> value_type {
         return vector_erase(&underlying, index);
     }
 
@@ -288,7 +288,7 @@ public:
      * @param index the position at which to insert the given value
      * @throw std::bad_alloc if the allocation failed
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline void insert(const value_type& value, size_type index) {
+    _dc4c_constexpr_since_cxx14 inline void insert(const value_type& value, size_type index) {
         if (!vector_insert(&underlying, value, index)) {
             throw std::bad_alloc();
         }
@@ -300,7 +300,7 @@ public:
      * @param newCap the amount of elements the vector should be able to store
      * @throw std::bad_alloc if the allocation failed
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline void reserve(size_type newCap) {
+    _dc4c_constexpr_since_cxx14 inline void reserve(size_type newCap) {
         if (!vector_reserve(&underlying, newCap)) {
             throw std::bad_alloc();
         }
@@ -309,7 +309,7 @@ public:
     /**
      * Removes all elements stored in this vector.
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline void clear() {
+    _dc4c_constexpr_since_cxx14 inline void clear() {
         vector_clear(&underlying);
     }
 
@@ -336,7 +336,7 @@ public:
      *
      * @return the underlying storage of the managed C vector
      */
-    __DC4C_CONSTEXPR_SINCE_CXX14 inline auto getUnderlyingData() noexcept -> value_type* {
+    _dc4c_constexpr_since_cxx14 inline auto getUnderlyingData() noexcept -> value_type* {
         return underlying.content;
     }
 
@@ -356,16 +356,16 @@ public:
      * @param comp the comparator functor used to sort the vector
      */
     template<typename C = std::less<value_type>>
-    __DC4C_CONSTEXPR_SINCE_CXX20 inline void sort(const C& comp = C()) {
+    _dc4c_constexpr_since_cxx20 inline void sort(const C& comp = C()) {
         std::sort(begin(), end(), comp);
     }
 };
 }
 
-#define __dc4c_vector_cxx_wrapper(name, actual) \
+#define _dc4c_vector_cxx_wrapper(name, actual) \
 namespace dc4c {                         \
 using vector_##name = vector<actual>;    \
 }
 
-# endif /* __DC4C_vector_hpp */
-#endif /* !__DC4C_vector_h */
+# endif /* _dc4c_vector_hpp */
+#endif /* !_dc4c_vector_h */
