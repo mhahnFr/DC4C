@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Written in 2023 - 2025 by mhahnFr
+ * Written in 2023 - 2026 by mhahnFr
  *
  * This file is part of DC4C.
  *
@@ -31,21 +31,14 @@
   */
  #define __dc4c_pair_methods_cxx(type1, type2, name)                            \
  namespace dc4c {                                                               \
- static inline std::pair<type1, type2> to_cpp(const dc4c::pair_##name & self) { \
+ static inline std::pair<type1, type2> to_cpp(const pair_##name & self) { \
      return std::make_pair(self.first, self.second);                            \
  }                                                                              \
                                                                                 \
- static inline dc4c::pair_##name to_dc4c(const std::pair<type1, type2> & p) {   \
+ static inline pair_##name to_dc4c(const std::pair<type1, type2> & p) {   \
      return make_pair_##name(p.first, p.second);                                \
  }                                                                              \
  }
-
- /** The beginning of the namespace. */
- #define __dc4c_pair_namespace_begin namespace dc4c {
- /** The end of the namespace.       */
- #define __dc4c_pair_namespace_end   ; }
- /** The prefix of the namespace.    */
- #define __dc4c_pair_namespace_name  dc4c::
 
  #endif /* __DC4C_pair_hpp */
 #endif /* __DC4C_pair_h */
