@@ -18,12 +18,18 @@
 
 // TODO: More version and compiler checks
 
-#if __STDC_VERSION__ < 202311L
-# include <stdbool.h>
-#endif
+#ifdef __cplusplus
+# include <cstdlib>
+# include <cstring>
 
-#include <stdlib.h>
-#include <string.h>
+#else
+# if __STDC_VERSION__ < 202311L
+#  include <stdbool.h>
+# endif
+
+# include <stdlib.h>
+# include <string.h>
+#endif
 
 /**
  * Defines the vector structure.
@@ -32,10 +38,10 @@
  * @param type the contained type
  */
 #define _dc4c_vector_named(name, type) \
-struct vector_##name {                  \
-    size_t count;                       \
-    size_t cap;                         \
-    type*  content;                     \
+struct vector_##name {                 \
+    size_t count;                      \
+    size_t cap;                        \
+    type*  content;                    \
 }
 
 #ifdef __cplusplus
@@ -382,7 +388,7 @@ do {                                                               \
  * @param name the name of the vector
  * @param type the contained type
  */
-#define typedef_vector_named(name, type)        \
+#define typedef_vector_named(name, type)       \
 _dc4c_vector_named(name, type);                \
 _dc4c_vector_cxx_wrapper(name, vector_##name); \
 typedef struct vector_##name vector_##name##_t
