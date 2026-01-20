@@ -13,32 +13,32 @@
  * see the file LICENSE. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#ifndef __DC4C_pair_h
- #warning Wrong inclusion of "pair.hpp" redirected to #include "pair.h"!
- #include "pair.h"
-#else
- #ifndef __DC4C_pair_hpp
- #define __DC4C_pair_hpp
- 
- #include <utility>
+#ifndef _dc4c_pair_hpp
+#define _dc4c_pair_hpp
 
- /**
-  * Defines the C++ helper functions for the pair.
-  *
-  * @param type1 the first contained type
-  * @param type2 the second contained type
-  * @param name the name of the pair
-  */
- #define __dc4c_pair_methods_cxx(type1, type2, name)                            \
- namespace dc4c {                                                               \
- static inline std::pair<type1, type2> to_cpp(const pair_##name & self) { \
-     return std::make_pair(self.first, self.second);                            \
- }                                                                              \
-                                                                                \
- static inline pair_##name to_dc4c(const std::pair<type1, type2> & p) {   \
-     return make_pair_##name(p.first, p.second);                                \
- }                                                                              \
- }
+#include <utility>
 
- #endif /* __DC4C_pair_hpp */
-#endif /* __DC4C_pair_h */
+/**
+ * Defines the C++ helper functions for the pair.
+ *
+ * @param type1 the first contained type
+ * @param type2 the second contained type
+ * @param name the name of the pair
+ */
+#define _dc4c_pair_methods_cxx(type1, type2, name)                       \
+namespace dc4c {                                                         \
+static inline std::pair<type1, type2> to_cpp(const pair_##name & self) { \
+    return std::make_pair(self.first, self.second);                      \
+}                                                                        \
+                                                                         \
+static inline pair_##name to_dc4c(const std::pair<type1, type2> & p) {   \
+    return make_pair_##name(p.first, p.second);                          \
+}                                                                        \
+}
+
+#ifndef _dc4c_pair_h
+# warning Wrong inclusion of "pair.hpp" redirected to #include "pair.h"!
+# include "pair.h"
+#endif
+
+#endif /* _dc4c_pair_hpp */

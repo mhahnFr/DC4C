@@ -13,13 +13,13 @@
  * see the file LICENSE. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#ifndef __DC4C_pair_h
-#define __DC4C_pair_h
+#ifndef _dc4c_pair_h
+#define _dc4c_pair_h
 
 #ifdef __cplusplus
 # include "pair.hpp"
 #else
-# define __dc4c_pair_methods_cxx(type1, type2, name)
+# define _dc4c_pair_methods_cxx(type1, type2, name)
 #endif
 
 /**
@@ -29,10 +29,10 @@
  * @param type1 the first contained type
  * @param type2 the second contained type
  */
-#define __dc4c_pair_named(name, type1, type2) \
-struct pair_##name {                          \
-    type1 first;                              \
-    type2 second;                             \
+#define _dc4c_pair_named(name, type1, type2) \
+struct pair_##name {                         \
+    type1 first;                             \
+    type2 second;                            \
 }
 
 /**
@@ -42,12 +42,12 @@ struct pair_##name {                          \
  * @param type2 the second contained type
  * @param name the name of the pair
  */
-#define __dc4c_pair_methods(type1, type2, name)                                \
+#define _dc4c_pair_methods(type1, type2, name)                                 \
 static inline struct pair_##name make_pair_##name(type1 first, type2 second) { \
     struct pair_##name toReturn = { first, second };                           \
     return toReturn;                                                           \
 }                                                                              \
-__dc4c_pair_methods_cxx(type1, type2, name)
+_dc4c_pair_methods_cxx(type1, type2, name)
 
 /**
  * @brief Defines a pair containing the two given types.
@@ -60,8 +60,8 @@ __dc4c_pair_methods_cxx(type1, type2, name)
  * @param type2 the second contained type
  */
 #define typedef_pair_named(name, type1, type2) \
-__dc4c_pair_named(name, type1, type2);         \
-__dc4c_pair_methods(type1, type2, name)        \
+_dc4c_pair_named(name, type1, type2);          \
+_dc4c_pair_methods(type1, type2, name)         \
 typedef struct pair_##name pair_##name##_t
 
 /**
@@ -75,4 +75,4 @@ typedef struct pair_##name pair_##name##_t
  */
 #define typedef_pair(type1, type2) typedef_pair_named(type1 ## _ ## type2, type1, type2)
 
-#endif /* __DC4C_pair_h */
+#endif /* _dc4c_pair_h */
