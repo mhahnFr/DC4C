@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Written in 2023 - 2025 by mhahnFr
+ * Written in 2023 - 2026 by mhahnFr
  *
  * This file is part of DC4C.
  *
@@ -13,18 +13,18 @@
  * see the file LICENSE. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#ifndef __DC4C_optional_h
-#define __DC4C_optional_h
+#ifndef _dc4c_optional_h
+#define _dc4c_optional_h
 
 #include <stdbool.h>
 
 #ifdef __cplusplus
- #include "optional.hpp"
+# include "optional.hpp"
 #else
- #define __dc4c_optional_namespace_begin
- #define __dc4c_optional_namespace_end
- #define __dc4c_optional_namespace_name
- #define __dc4c_optional_methods_cxx(type, name)
+# define _dc4c_optional_namespace_begin
+# define _dc4c_optional_namespace_end
+# define _dc4c_optional_namespace_name
+# define _dc4c_optional_methods_cxx(type, name)
 #endif
 
 /**
@@ -33,13 +33,13 @@
  * @param name the name of the optional
  * @param type the contained type
  */
-#define __dc4c_optional_named(name, type)  \
-    __dc4c_optional_namespace_begin \
+#define _dc4c_optional_named(name, type)  \
+    _dc4c_optional_namespace_begin  \
         struct optional_##name {    \
             bool has_value;         \
             type value;             \
         };                          \
-    __dc4c_optional_namespace_end
+    _dc4c_optional_namespace_end
 
 /**
  * Defines the helper functions for the optional.
@@ -47,8 +47,8 @@
  * @param type the contained type
  * @param name the name of the optional
  */
-#define __dc4c_optional_methods(type, name) \
-__dc4c_optional_methods_cxx(type, name)
+#define _dc4c_optional_methods(type, name) \
+_dc4c_optional_methods_cxx(type, name)
 
 /**
  * @brief Defines an optional containing the given type.
@@ -60,9 +60,9 @@ __dc4c_optional_methods_cxx(type, name)
  * @param type the contained type
  */
 #define typedef_optional_named(name, type) \
-__dc4c_optional_named(name, type)          \
-__dc4c_optional_methods(type, name)        \
-typedef struct __dc4c_optional_namespace_name optional_##name optional_##name##_t
+_dc4c_optional_named(name, type)           \
+_dc4c_optional_methods(type, name)         \
+typedef struct _dc4c_optional_namespace_name optional_##name optional_##name##_t
 
 /**
  * @brief Defines an optional containing the given type.
@@ -74,4 +74,4 @@ typedef struct __dc4c_optional_namespace_name optional_##name optional_##name##_
  */
 #define typedef_optional(type) typedef_optional_named(type, type)
 
-#endif /* __DC4C_optional_h */
+#endif /* _dc4c_optional_h */

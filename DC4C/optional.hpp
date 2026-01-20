@@ -1,7 +1,7 @@
 /*
  * DC4C - Standard data containers for C
  *
- * Written in 2023 - 2025 by mhahnFr
+ * Written in 2023 - 2026 by mhahnFr
  *
  * This file is part of DC4C.
  *
@@ -13,12 +13,12 @@
  * see the file LICENSE. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#ifndef __DC4C_optional_h
+#ifndef _dc4c_optional_h
  #warning Wrong inclusion of "optional.hpp" redirected to #include "optional.h"!
  #include "optional.h"
 #else
- #ifndef __DC4C_optional_hpp
- #define __DC4C_optional_hpp
+ #ifndef _dc4c_optional_hpp
+ #define _dc4c_optional_hpp
  
  #if __cplusplus >= 201703L
   #include <optional>
@@ -29,7 +29,7 @@
    * @param type the contained type
    * @param name the name of the C optional
    */
-  #define __dc4c_optional_methods_cxx(type, name)                                                  \
+  #define _dc4c_optional_methods_cxx(type, name)                                                  \
   namespace dc4c {                                                                                 \
   constexpr static inline auto to_cpp(const dc4c::optional_##name & self) -> std::optional<type> { \
       if (self.has_value) {                                                                        \
@@ -49,15 +49,15 @@
   }                                                                                                \
   }
  #else
-  #define __dc4c_optional_methods_cxx(type, name)
+  #define _dc4c_optional_methods_cxx(type, name)
  #endif
 
  /** The namespace begin.  */
- #define __dc4c_optional_namespace_begin namespace dc4c {
+ #define _dc4c_optional_namespace_begin namespace dc4c {
  /** The namespace end.    */
- #define __dc4c_optional_namespace_end   }
+ #define _dc4c_optional_namespace_end   }
  /** The namespace prefix. */
- #define __dc4c_optional_namespace_name  dc4c::
+ #define _dc4c_optional_namespace_name  dc4c::
 
- #endif /* __DC4C_optional_hpp */
-#endif /* __DC4C_optional_h */
+ #endif /* _dc4c_optional_hpp */
+#endif /* _dc4c_optional_h */
