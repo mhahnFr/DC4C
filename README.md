@@ -213,7 +213,7 @@ The C++ interoperability adheres to the C++17 standard.
 ## Final notes
 This project is marked with CC0 1.0 Universal.
 
-Written in 2023 - 2025 by [mhahnFr][1]
+Written in 2023 - 2026 by [mhahnFr][1]
 
 [1]: https://github.com/mhahnFr
 [2]: https://en.cppreference.com/w/cpp/container/vector.html
