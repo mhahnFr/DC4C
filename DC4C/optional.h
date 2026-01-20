@@ -42,7 +42,10 @@ struct optional_##name {                 \
  * @param type the contained type
  * @param name the name of the optional
  */
-#define _dc4c_optional_methods(type, name) \
+#define _dc4c_optional_methods(type, name)                              \
+static inline struct optional_##name make_optional_##name(type value) { \
+    return (struct optional_##name) { true, value };                    \
+}                                                                       \
 _dc4c_optional_methods_cxx(type, name)
 
 /**
