@@ -21,9 +21,6 @@
 #ifdef __cplusplus
 # include "optional.hpp"
 #else
-# define _dc4c_optional_namespace_begin
-# define _dc4c_optional_namespace_end
-# define _dc4c_optional_namespace_name
 # define _dc4c_optional_methods_cxx(type, name)
 #endif
 
@@ -33,13 +30,11 @@
  * @param name the name of the optional
  * @param type the contained type
  */
-#define _dc4c_optional_named(name, type)  \
-    _dc4c_optional_namespace_begin  \
-        struct optional_##name {    \
-            bool has_value;         \
-            type value;             \
-        };                          \
-    _dc4c_optional_namespace_end
+#define _dc4c_optional_named(name, type) \
+struct optional_##name {                 \
+    bool has_value;                      \
+    type value;                          \
+}
 
 /**
  * Defines the helper functions for the optional.
@@ -60,9 +55,9 @@ _dc4c_optional_methods_cxx(type, name)
  * @param type the contained type
  */
 #define typedef_optional_named(name, type) \
-_dc4c_optional_named(name, type)           \
+_dc4c_optional_named(name, type);          \
 _dc4c_optional_methods(type, name)         \
-typedef struct _dc4c_optional_namespace_name optional_##name optional_##name##_t
+typedef struct optional_##name optional_##name##_t
 
 /**
  * @brief Defines an optional containing the given type.

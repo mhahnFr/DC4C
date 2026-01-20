@@ -31,19 +31,19 @@
    */
   #define _dc4c_optional_methods_cxx(type, name)                                                  \
   namespace dc4c {                                                                                 \
-  constexpr static inline auto to_cpp(const dc4c::optional_##name & self) -> std::optional<type> { \
+  constexpr static inline auto to_cpp(const optional_##name & self) -> std::optional<type> { \
       if (self.has_value) {                                                                        \
           return self.value;                                                                       \
       }                                                                                            \
       return std::nullopt;                                                                         \
   }                                                                                                \
                                                                                                    \
-  constexpr static inline auto to_dc4c(const std::optional<type> & opt) -> dc4c::optional_##name { \
+  constexpr static inline auto to_dc4c(const std::optional<type> & opt) -> optional_##name { \
       if (opt.has_value()) {                                                                       \
           return { true, opt.value() };                                                            \
       }                                                                                            \
                                                                                                    \
-      auto toReturn = dc4c::optional_##name();                                                     \
+      auto toReturn = optional_##name();                                                     \
       toReturn.has_value = false;                                                                  \
       return toReturn;                                                                             \
   }                                                                                                \
@@ -51,13 +51,6 @@
  #else
   #define _dc4c_optional_methods_cxx(type, name)
  #endif
-
- /** The namespace begin.  */
- #define _dc4c_optional_namespace_begin namespace dc4c {
- /** The namespace end.    */
- #define _dc4c_optional_namespace_end   }
- /** The namespace prefix. */
- #define _dc4c_optional_namespace_name  dc4c::
 
  #endif /* _dc4c_optional_hpp */
 #endif /* _dc4c_optional_h */
