@@ -16,11 +16,11 @@
 #ifndef _dc4c_optional_h
 #define _dc4c_optional_h
 
-#include <stdbool.h>
-
 #ifdef __cplusplus
 # include "optional.hpp"
 #else
+# include <stdbool.h>
+
 # define _dc4c_optional_methods_cxx(type, name)
 #endif
 

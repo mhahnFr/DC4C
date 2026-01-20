@@ -13,44 +13,45 @@
  * see the file LICENSE. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#ifndef _dc4c_optional_h
- #warning Wrong inclusion of "optional.hpp" redirected to #include "optional.h"!
- #include "optional.h"
+#ifndef _dc4c_optional_hpp
+#define _dc4c_optional_hpp
+
+#if __cplusplus >= 201703L
+# include <optional>
+
+/**
+* Defines the C++ helper functions into the namespace @c dc4c .
+*
+* @param type the contained type
+* @param name the name of the C optional
+*/
+# define _dc4c_optional_methods_cxx(type, name)                                            \
+namespace dc4c {                                                                           \
+constexpr static inline auto to_cpp(const optional_##name & self) -> std::optional<type> { \
+    if (self.has_value) {                                                                  \
+        return self.value;                                                                 \
+    }                                                                                      \
+    return std::nullopt;                                                                   \
+}                                                                                          \
+                                                                                           \
+constexpr static inline auto to_dc4c(const std::optional<type> & opt) -> optional_##name { \
+    if (opt.has_value()) {                                                                 \
+        return { true, opt.value() };                                                      \
+    }                                                                                      \
+                                                                                           \
+    auto toReturn = optional_##name();                                                     \
+    toReturn.has_value = false;                                                            \
+    return toReturn;                                                                       \
+}                                                                                          \
+}
+
 #else
- #ifndef _dc4c_optional_hpp
- #define _dc4c_optional_hpp
- 
- #if __cplusplus >= 201703L
-  #include <optional>
+# define _dc4c_optional_methods_cxx(type, name)
+#endif
 
-  /**
-   * Defines the C++ helper functions into the namespace @c dc4c .
-   *
-   * @param type the contained type
-   * @param name the name of the C optional
-   */
-  #define _dc4c_optional_methods_cxx(type, name)                                                  \
-  namespace dc4c {                                                                                 \
-  constexpr static inline auto to_cpp(const optional_##name & self) -> std::optional<type> { \
-      if (self.has_value) {                                                                        \
-          return self.value;                                                                       \
-      }                                                                                            \
-      return std::nullopt;                                                                         \
-  }                                                                                                \
-                                                                                                   \
-  constexpr static inline auto to_dc4c(const std::optional<type> & opt) -> optional_##name { \
-      if (opt.has_value()) {                                                                       \
-          return { true, opt.value() };                                                            \
-      }                                                                                            \
-                                                                                                   \
-      auto toReturn = optional_##name();                                                     \
-      toReturn.has_value = false;                                                                  \
-      return toReturn;                                                                             \
-  }                                                                                                \
-  }
- #else
-  #define _dc4c_optional_methods_cxx(type, name)
- #endif
+#ifndef _dc4c_optional_h
+# warning Wrong inclusion of "optional.hpp" redirected to #include "optional.h"!
+# include "optional.h"
+#endif
 
- #endif /* _dc4c_optional_hpp */
-#endif /* _dc4c_optional_h */
+#endif /* _dc4c_optional_hpp */
