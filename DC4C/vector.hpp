@@ -13,41 +13,47 @@
  * see the file LICENSE. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+#ifndef _dc4c_vector_hpp
+#define _dc4c_vector_hpp
+
+#define _dc4c_vector_cxx_wrapper(name, actual) \
+namespace dc4c {                               \
+using vector_##name = vector<actual>;          \
+}
+
 #ifndef _dc4c_vector_h
 # warning Wrong inclusion of "vector.hpp" redirected to #include "vector.h"!
 # include "vector.h"
-#else
-# ifndef _dc4c_vector_hpp
-# define _dc4c_vector_hpp
+#endif
 
 #if __cplusplus < 201103L
 # error The C++ wrapper of the DC4C vector requires C++11 or newer.
 #endif
 
-# if __cplusplus >= 201402L
-#  define _dc4c_constexpr_since_cxx14 constexpr
-# else
-#  define _dc4c_constexpr_since_cxx14
-# endif
+#if __cplusplus >= 201402L
+# define _dc4c_constexpr_since_cxx14 constexpr
+#else
+# define _dc4c_constexpr_since_cxx14
+#endif
 
-# if __cplusplus >= 201703L
-#  define _dc4c_constexpr_since_cxx17 constexpr
-# else
-#  define _dc4c_constexpr_since_cxx17
-# endif
+#if __cplusplus >= 201703L
+# define _dc4c_constexpr_since_cxx17 constexpr
+#else
+# define _dc4c_constexpr_since_cxx17
+#endif
 
-# if __cplusplus >= 202002L
-#  define _dc4c_constexpr_since_cxx20 constexpr
-# else
-#  define _dc4c_constexpr_since_cxx20
-# endif
+#if __cplusplus >= 202002L
+# define _dc4c_constexpr_since_cxx20 constexpr
+#else
+# define _dc4c_constexpr_since_cxx20
+#endif
 
-# include <algorithm>
-# include <functional>
-# include <vector>
+#include <algorithm>
+#include <functional>
+#include <vector>
 
 namespace dc4c {
-# if __cplusplus >= 202002L
+#if __cplusplus >= 202002L
 template<typename T>
 concept is_dc4c_vector = requires (T t) {
     t.count = static_cast<std::size_t>(0);
@@ -55,7 +61,7 @@ concept is_dc4c_vector = requires (T t) {
 
     static_cast<decltype(t.content)>(nullptr);
 };
-# endif
+#endif
 
 /**
  * This class acts as a RAII compatible wrapper class for the C vector of DC4C.
@@ -63,11 +69,11 @@ concept is_dc4c_vector = requires (T t) {
  * @tparam T the C DC4C vector type to be managed by this wrapper class
  */
 template<
-# if __cplusplus >= 202002L
+#if __cplusplus >= 202002L
 is_dc4c_vector
-# else
+#else
 typename
-# endif
+#endif
 T>
 class vector {
     /** The underlying C vector. */
@@ -362,10 +368,4 @@ public:
 };
 }
 
-#define _dc4c_vector_cxx_wrapper(name, actual) \
-namespace dc4c {                         \
-using vector_##name = vector<actual>;    \
-}
-
-# endif /* _dc4c_vector_hpp */
-#endif /* !_dc4c_vector_h */
+#endif /* _dc4c_vector_hpp */
