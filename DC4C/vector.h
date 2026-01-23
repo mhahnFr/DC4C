@@ -16,7 +16,9 @@
 #ifndef _dc4c_vector_h
 #define _dc4c_vector_h
 
-// TODO: More version and compiler checks
+#if !defined(__cplusplus) && (!defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L)
+# error The DC4C vector requires C23 or newer or C99 or newer with GNU extensions, both with expression statements extension.
+#endif
 
 #ifdef __cplusplus
 # include <cstdlib>
