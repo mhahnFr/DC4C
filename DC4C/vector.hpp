@@ -355,6 +355,12 @@ public:
         return underlying.content;
     }
 
+#if __cplusplus >= 201402L
+    constexpr inline auto release() noexcept -> T {
+        return std::exchange(underlying, vector_initializer);
+    }
+#endif
+
     /**
      * Sorts the vector using the given comparator.
      *
