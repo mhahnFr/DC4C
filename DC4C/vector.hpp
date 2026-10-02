@@ -38,8 +38,10 @@ using vector_##name = vector<actual>;          \
 
 #if __cplusplus >= 201703L
 # define _dc4c_constexpr_since_cxx17 constexpr
+# define _dc4c_nodiscard [[nodiscard]]
 #else
 # define _dc4c_constexpr_since_cxx17
+# define _dc4c_nodiscard
 #endif
 
 #if __cplusplus >= 202002L
@@ -356,7 +358,6 @@ public:
     }
 
 #if __cplusplus >= 201402L
-    constexpr inline auto release() noexcept -> T {
     /**
      * @brief Returns the underlying C vector managed by this wrapper, while
      * releasing the ownership of it.
@@ -365,6 +366,7 @@ public:
      *
      * @return the underlying C vector
      */
+    _dc4c_nodiscard constexpr inline auto release() noexcept -> T {
         return std::exchange(underlying, vector_initializer);
     }
 #endif
