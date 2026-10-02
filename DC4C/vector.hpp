@@ -357,6 +357,14 @@ public:
 
 #if __cplusplus >= 201402L
     constexpr inline auto release() noexcept -> T {
+    /**
+     * @brief Returns the underlying C vector managed by this wrapper, while
+     * releasing the ownership of it.
+     *
+     * This object is empty after the operation as if @c clear had been called.
+     *
+     * @return the underlying C vector
+     */
         return std::exchange(underlying, vector_initializer);
     }
 #endif
